@@ -1,0 +1,7 @@
+﻿Debt,Type,Current Balance,Starting Balance,APR,Monthly Payment,Due Day,Status,Total Paid
+1st Horizon (H),Loan,10390.52,10390.52,13,294.56,15,Paused,0
+TVA (H),Loan,9788.08,9788.08,0,200,25,Active,0
+ORNL (H),Loan,10266.74,10266.74,0,0,28,Active,0
+Mike (H),Personal Loan,2000,2000,0,0,5,Active,0
+Apple (H),Card,500,500,0,0,,Active,0
+HOUSE,Mortgage,255670.26,257470.26,5.49,1800,1,Active,1800
