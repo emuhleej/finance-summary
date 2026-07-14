@@ -1,1102 +1,1666 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Emily &amp; Hameed Budget Planner</title>
+<title>Emergency Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Nunito+Sans:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{
-  --rose:#C97B8E;
-  --brown:#A4643F;
-  --gold:#D4A23A;
-  --sand:#D8C9A6;
-  --amber:#D4A23A;
-  --pale:#F3E7CC;
-  --green:#A4643F;
-  --pine:#5B3829;
-  --cream:#F8F1E3;
-  --card:#FFFFFF;
-  --border:#D8C9A6;
-  --ink:#3F271D;
-  --muted:#7E664E;
-  --red:#C97B8E;
-  --radius:14px;
-  --mono:'IBM Plex Mono',ui-monospace,monospace;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Nunito Sans',system-ui,sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;font-size:15px;line-height:1.5}
-h1,h2,h3{font-family:'Fraunces',Georgia,serif}
-button{font-family:inherit;cursor:pointer}
-input,select{font-family:inherit;font-size:14px}
+  :root {
+    --ink: #453741;
+    --paper: #f6f4f1;
+    --card: #ffffff;
+    --line: #eee8ea;
+    --muted: #8b7d85;
+    --teal: #47938a;
+    --teal-dark: #397b73;
+    --teal-mid: #8dc6bf;
+    --teal-soft: #e7f2f0;
+    --plum: #584053;
+    --plum-deep: #46333f;
+    --plum-soft: #ece5ea;
+    --amber: #c4841f;
+    --amber-mid: #fcbc66;
+    --amber-soft: #fdf1dd;
+    --coral: #e0592f;
+    --coral-mid: #f97b4f;
+    --coral-soft: #fdeae2;
+    --shadow: 0 2px 12px rgba(88,64,83,0.07);
+    --shadow-lift: 0 6px 24px rgba(88,64,83,0.12);
+    --r: 20px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: "Nunito Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 70px;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 0 16px; }
+  h1, h2, .p-name, .cover-btn .t, .modal h3, .pet-name { font-family: "Fraunces", Georgia, serif; }
 
-/* ---------- header ---------- */
-header{background:var(--pine);color:#F8F1E3;padding:18px 22px 0;border-bottom:4px solid var(--rose)}
-.hd-top{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;max-width:1100px;margin:0 auto}
-.hd-top h1{font-size:26px;font-weight:600;letter-spacing:.2px}
-.hd-top h1 span{color:var(--amber)}
-.hd-month{font-family:var(--mono);font-size:13px;color:var(--sand)}
-.savebar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;max-width:1100px;margin:12px auto 0}
-.savebar .btn{padding:7px 12px;font-size:12.5px}
-.sync-state{font-family:var(--mono);font-size:12px;color:#E8DCC1}
-.sync-state.dirty{color:var(--sand);font-weight:700}
-.sync-state.saved{color:#F3E7CC}
-nav{display:flex;gap:4px;max-width:1100px;margin:14px auto 0;overflow-x:auto}
-nav button{background:transparent;border:none;color:#E8DCC1;padding:10px 16px;font-size:14px;font-weight:700;border-radius:10px 10px 0 0;white-space:nowrap}
-nav button.active{background:var(--cream);color:var(--pine)}
-nav button:not(.active):hover{background:rgba(255,255,255,.08);color:#fff}
+  /* ---------- Header ---------- */
+  .top {
+    background: linear-gradient(135deg, var(--plum) 0%, var(--plum-deep) 100%);
+    color: #fff;
+    padding: 22px 0 20px;
+    margin-bottom: 20px;
+    border-radius: 0 0 28px 28px;
+  }
+  .top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .top-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .back-btn {
+    display: none;
+    border: none;
+    background: rgba(255,255,255,0.14);
+    color: #fff;
+    border-radius: 12px;
+    width: 40px; height: 40px;
+    font-size: 1.15rem;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  body.subpage .back-btn { display: block; }
+  .top h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  @media (max-width: 400px) { .top h1 { font-size: 1.1rem; } }
+  .top h1 em { font-style: normal; color: var(--teal-mid); }
+  .edit-toggle {
+    border: none;
+    background: rgba(255,255,255,0.14);
+    color: #fff;
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s, color 0.15s;
+  }
+  .edit-toggle.on { background: var(--amber-mid); color: var(--plum-deep); }
+  .sync-pill {
+    font-size: 0.58rem; font-weight: 800;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 4px 8px; border-radius: 999px;
+    background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.75);
+    flex-shrink: 0;
+  }
+  .sync-pill.synced { background: rgba(141,198,191,0.28); color: #c8ebe5; }
+  .sync-pill.error { background: rgba(249,123,79,0.3); color: #ffc9b3; }
 
-main{max-width:1100px;margin:0 auto;padding:24px 22px 80px}
-.view{display:none}
-.view.active{display:block}
-.view-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:18px}
-.view-head h2{font-size:24px;font-weight:600}
-.view-head p{color:var(--muted);font-size:13px;width:100%}
+  /* ---------- Pages ---------- */
+  .page { display: none; }
+  .page.active { display: block; animation: rise 0.28s ease; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
-/* ---------- cards & stats ---------- */
-.grid{display:grid;gap:16px}
-.grid.cols-4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
-.grid.cols-2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
-.stat .label{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
-.stat .num{font-family:var(--mono);font-size:26px;font-weight:600;margin-top:4px}
-.stat .sub{font-size:12px;color:var(--muted);margin-top:2px}
-.num.pos{color:var(--green)}
-.num.neg{color:var(--red)}
+  /* ---------- Cover ---------- */
+  .cover-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 4px; }
+  .cover-btn {
+    border: none;
+    background: var(--card);
+    border-radius: 24px;
+    padding: 28px 16px 24px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    text-align: center;
+    font-family: inherit;
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .cover-btn:active { transform: scale(0.97); box-shadow: var(--shadow-lift); }
+  .cover-btn .ico {
+    width: 58px; height: 58px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 14px;
+  }
+  .cover-btn .ico svg { width: 26px; height: 26px; }
+  .cover-btn.c-contacts .ico { background: var(--teal-soft); color: var(--teal); }
+  .cover-btn.c-medical .ico { background: var(--coral-soft); color: var(--coral); }
+  .cover-btn.c-docs .ico { background: var(--amber-soft); color: var(--amber); }
+  .cover-btn.c-pets .ico { background: var(--plum-soft); color: var(--plum); }
+  .cover-btn .t { font-weight: 700; font-size: 1.15rem; color: var(--ink); }
+  .cover-btn .s { font-size: 0.76rem; color: var(--muted); margin-top: 4px; font-weight: 600; }
 
-/* signature: paycheck split bar */
-.split-card{background:var(--pine);color:#F8F1E3;border:none}
-.split-card .label{color:var(--pale)}
-.split-bar{display:flex;height:34px;border-radius:8px;overflow:hidden;margin:12px 0 8px;font-family:var(--mono);font-size:12px;font-weight:600}
-.split-bar .seg-hold{background:var(--gold);color:var(--pine);display:flex;align-items:center;justify-content:center;min-width:70px}
-.split-bar .seg-house{background:var(--rose);color:#F8F1E3;display:flex;align-items:center;justify-content:center}
-.split-legend{display:flex;gap:18px;font-size:12px;color:#E8DCC1}
-.split-legend b{color:#fff}
-.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+  /* ---------- Section bands ---------- */
+  .owner-band { display: flex; align-items: center; gap: 10px; margin: 26px 0 12px; }
+  .owner-band:first-child, .page > .owner-band:first-of-type { margin-top: 6px; }
+  .owner-chip {
+    font-size: 0.78rem; font-weight: 800;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 6px 16px; border-radius: 999px;
+  }
+  .owner-chip.em { background: var(--teal-soft); color: var(--teal); }
+  .owner-chip.hameed { background: var(--plum-soft); color: var(--plum); }
+  .owner-chip.pets { background: var(--amber-soft); color: var(--amber); }
+  .owner-band .rule { flex: 1; height: 1px; background: var(--line); }
+  .sub-band { display: flex; align-items: center; justify-content: space-between; margin: 18px 0 8px; }
+  .sub-band h2 { font-size: 0.95rem; font-weight: 700; color: var(--ink); }
 
-/* ---------- tables ---------- */
-table{width:100%;border-collapse:collapse}
-th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);padding:8px 10px;border-bottom:2px solid var(--border)}
-td{padding:10px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:14px}
-tr:last-child td{border-bottom:none}
-tr.paid-row td{opacity:.55}
-tr.paid-row .bill-name{text-decoration:line-through}
-td.money{font-family:var(--mono);white-space:nowrap}
-.table-wrap{overflow-x:auto}
+  .search {
+    width: 100%;
+    border: none;
+    border-radius: 16px;
+    padding: 14px 18px;
+    font-size: 16px;
+    font-family: inherit;
+    background: var(--card);
+    color: var(--ink);
+    margin-bottom: 8px;
+    box-shadow: var(--shadow);
+  }
+  .search:focus { outline: 2px solid var(--teal-mid); }
+  .search::placeholder { color: var(--muted); }
 
-/* tags */
-.tag{display:inline-block;font-size:11px;font-weight:800;padding:2px 9px;border-radius:99px}
-.tag.emily{background:var(--pale);color:var(--pine)}
-.tag.hameed{background:var(--green);color:#fff}
-.tag.both{background:var(--amber);color:var(--pine)}
-.tag.cat{background:#F3E7CC;color:var(--muted);font-weight:700}
+  .add-btn {
+    display: none;
+    border: none;
+    background: var(--teal);
+    color: #fff;
+    border-radius: 999px;
+    padding: 7px 16px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  body.editing .add-btn { display: inline-block; }
 
-/* checkbox */
-.chk{width:22px;height:22px;accent-color:var(--green);cursor:pointer}
+  /* ---------- Cards ---------- */
+  .card {
+    background: var(--card);
+    border-radius: var(--r);
+    padding: 16px;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow);
+  }
+  .c-top { display: flex; align-items: center; gap: 12px; }
+  .avatar {
+    flex-shrink: 0;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--teal-soft);
+    color: var(--teal);
+    font-weight: 800;
+    font-size: 0.95rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .avatar.doc { background: var(--coral-soft); color: var(--coral); }
+  .c-info { flex: 1; min-width: 0; }
+  .c-name { font-weight: 800; font-size: 1rem; }
+  .c-rel { color: var(--muted); font-size: 0.84rem; font-weight: 600; }
+  .c-notes { color: var(--muted); font-size: 0.83rem; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); white-space: pre-wrap; }
+  .c-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .num-row { display: flex; align-items: center; gap: 8px; }
+  .num-label { flex: 1; min-width: 0; font-size: 0.87rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .num-label small { color: var(--muted); font-weight: 600; display: block; font-size: 0.72rem; }
+  .act {
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    text-decoration: none;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 0.82rem;
+    font-family: inherit;
+    min-height: 42px;
+    min-width: 42px;
+    padding: 0 16px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+  .act:active { transform: scale(0.95); }
+  .act.call { background: var(--teal); color: #fff; }
+  .act.text { background: var(--teal-soft); color: var(--teal-dark); }
+  .act.copy { background: var(--paper); color: var(--muted); padding: 0; width: 42px; }
+  .act svg { width: 15px; height: 15px; }
+  .row-edit { display: none; gap: 6px; }
+  body.editing .row-edit { display: flex; }
+  .icon-btn {
+    border: none;
+    background: var(--paper);
+    border-radius: 10px;
+    width: 36px; height: 36px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: var(--muted);
+  }
+  .icon-btn.del { color: var(--coral); background: var(--coral-soft); }
+  .mini { width: 28px; height: 28px; font-size: 0.75rem; border-radius: 8px; }
 
-/* buttons */
-.btn{border:none;border-radius:10px;padding:9px 16px;font-size:14px;font-weight:800}
-.btn-primary{background:var(--amber);color:var(--pine)}
-.btn-primary:hover{background:#C97B8E}
-.btn-ghost{background:transparent;border:1.5px solid var(--border);color:var(--ink)}
-.btn-ghost:hover{border-color:var(--green);color:var(--green)}
-.btn-sm{padding:5px 11px;font-size:12.5px;border-radius:8px}
-.btn-danger{background:transparent;border:none;color:var(--red);font-size:12.5px;font-weight:700}
-.icon-btn{background:none;border:none;font-size:15px;color:var(--muted);padding:4px}
-.icon-btn:hover{color:var(--pine)}
+  /* ---------- Medical / pet profiles ---------- */
+  .person-card { position: relative; overflow: hidden; }
+  .person-card::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
+    background: var(--teal);
+  }
+  .person-card.hameed::before { background: var(--plum); }
+  .person-card.pet::before { background: var(--amber-mid); }
+  .p-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .p-name, .pet-name { font-weight: 700; font-size: 1.2rem; }
+  .p-sub { font-size: 0.8rem; color: var(--muted); font-weight: 700; }
+  .p-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .p-item { background: var(--paper); border-radius: 14px; padding: 10px 12px; }
+  .p-item .k { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); font-weight: 800; }
+  .p-item .v { font-size: 0.9rem; font-weight: 700; margin-top: 2px; white-space: pre-wrap; }
+  .p-item.warn { background: var(--coral-soft); }
+  .p-item.warn .k { color: var(--coral); }
+  .p-item.wide { grid-column: 1 / -1; }
+  .med-rows { margin-top: 12px; border-top: 1px dashed var(--line); padding-top: 8px; }
+  .k-row { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); font-weight: 800; margin-bottom: 4px; }
+  .med-line { padding: 7px 0; border-bottom: 1px dashed var(--line); font-size: 0.92rem; display: flex; justify-content: space-between; gap: 10px; align-items: baseline; font-weight: 600; }
+  .med-line:last-child { border-bottom: none; }
+  .med-line .dose { color: var(--muted); font-size: 0.84rem; text-align: right; flex-shrink: 0; }
+  .med-line .mnote { display: block; font-size: 0.76rem; color: var(--muted); font-weight: 600; }
+  .med-inline-edit { display: none; gap: 4px; margin-left: 8px; vertical-align: middle; }
+  body.editing .med-inline-edit { display: inline-flex; }
+  .add-inline {
+    display: none;
+    margin-top: 10px;
+    border: 1.5px dashed var(--teal-mid);
+    background: transparent;
+    color: var(--teal);
+    border-radius: 12px;
+    width: 100%;
+    padding: 10px;
+    font-weight: 800;
+    font-size: 0.82rem;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  body.editing .add-inline { display: block; }
+  .setup-profile {
+    border: 1.5px dashed var(--teal-mid);
+    background: transparent;
+    color: var(--teal);
+    border-radius: var(--r);
+    width: 100%;
+    padding: 20px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    font-family: inherit;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  .share-pet {
+    display: inline-flex; align-items: center; gap: 6px;
+    border: none;
+    background: var(--plum-soft);
+    color: var(--plum);
+    border-radius: 999px;
+    padding: 9px 16px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+    margin-top: 12px;
+  }
+  .share-pet svg { width: 14px; height: 14px; }
 
-/* ---------- debt cards ---------- */
-.debt-card{position:relative}
-.debt-card.paused{opacity:.65}
-.debt-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-.debt-top h3{font-size:18px;font-weight:600}
-.debt-meta{font-size:12px;color:var(--muted);margin-top:2px}
-.debt-bal{font-family:var(--mono);font-size:24px;font-weight:600;margin:10px 0 2px}
-.debt-row{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px dashed var(--border)}
-.debt-row:last-of-type{border-bottom:none}
-.debt-row .v{font-family:var(--mono)}
-.progress{height:9px;background:#F3E7CC;border-radius:99px;overflow:hidden;margin:10px 0}
-.progress>div{height:100%;background:var(--green);border-radius:99px;transition:width .4s}
-.progress.goal>div{background:var(--amber)}
-.debt-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-.status-pill{font-size:11px;font-weight:800;padding:3px 10px;border-radius:99px}
-.status-pill.active{background:#F3E7CC;color:var(--green)}
-.status-pill.paused{background:#EFE3CC;color:var(--muted)}
-.status-pill.due{background:#F4DDE3;color:var(--red)}
-.status-pill.paid{background:#F3E7CC;color:var(--green)}
-.history-list{margin-top:12px;border-top:1px solid var(--border);padding-top:8px}
-.history-item{display:flex;justify-content:space-between;gap:10px;font-size:12px;padding:5px 0;border-bottom:1px dashed var(--border)}
-.history-item:last-child{border-bottom:none}
-.history-item .v{font-family:var(--mono);white-space:nowrap}
+  /* ---------- Documents ---------- */
+  .docs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 14px; }
+  .docs-grid.in-card { margin: 8px 0 0; }
+  .doc-tile {
+    background: var(--card);
+    border-radius: 18px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: var(--shadow);
+  }
+  .in-card .doc-tile { background: var(--paper); box-shadow: none; }
+  .doc-tile img { width: 100%; height: 90px; object-fit: cover; display: block; }
+  .doc-tile .pdf-face {
+    height: 90px; display: flex; align-items: center; justify-content: center;
+    background: var(--amber-soft); color: var(--amber);
+    font-weight: 800; font-size: 0.85rem; letter-spacing: 0.08em;
+  }
+  .doc-tile .doc-label { font-size: 0.74rem; padding: 8px 10px 2px; font-weight: 800; word-break: break-word; }
+  .doc-tile .doc-tag { font-size: 0.64rem; color: var(--muted); padding: 0 10px 6px; text-transform: uppercase; letter-spacing: 0.07em; font-weight: 800; }
+  .doc-foot { display: flex; gap: 6px; padding: 4px 8px 10px; }
+  .doc-foot button {
+    flex: 1;
+    border: none;
+    background: var(--teal-soft);
+    color: var(--teal-dark);
+    border-radius: 8px;
+    padding: 7px 0;
+    font-size: 0.72rem;
+    font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .doc-foot button.view { background: var(--paper); color: var(--muted); }
+  .in-card .doc-foot button.view { background: #fff; }
+  .doc-manage { display: none; gap: 6px; padding: 0 8px 10px; }
+  body.editing .doc-manage { display: flex; }
+  .doc-manage button {
+    flex: 1;
+    border: none;
+    background: var(--paper);
+    color: var(--muted);
+    border-radius: 8px;
+    padding: 7px 0;
+    font-size: 0.72rem;
+    font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .in-card .doc-manage button { background: #fff; }
+  .doc-manage button.d { background: var(--coral-soft); color: var(--coral); }
 
-/* goals */
-.goal-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-.goal-head h3{font-size:17px;font-weight:600}
-.goal-nums{font-family:var(--mono);font-size:13px;color:var(--muted);margin-top:6px}
+  /* ---------- Fullscreen viewer ---------- */
+  .viewer {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(20,14,18,0.96);
+    z-index: 50;
+    flex-direction: column;
+  }
+  .viewer.open { display: flex; }
+  .viewer-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px;
+    gap: 8px;
+  }
+  .viewer-bar .vb-group { display: flex; gap: 8px; }
+  .viewer-bar button {
+    border: none;
+    background: rgba(255,255,255,0.14);
+    color: #fff;
+    border-radius: 999px;
+    padding: 10px 18px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .viewer-bar button.primary { background: var(--teal); }
+  .viewer-body {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+    overflow: auto;
+    padding: 0 8px 20px;
+  }
+  .viewer-body img { max-width: 100%; max-height: 100%; border-radius: 8px; }
+  .viewer-body iframe { border: 0; width: 100%; height: 100%; background: #fff; border-radius: 8px; }
 
-/* receipts */
-.dropzone{border:2px dashed var(--border);border-radius:var(--radius);padding:30px;text-align:center;color:var(--muted);background:var(--card);margin-bottom:16px}
-.dropzone.drag{border-color:var(--amber);background:#F3E7CC}
-.receipt-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
-.receipt-item:last-child{border-bottom:none}
-.receipt-name{font-weight:700;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.receipt-meta{font-size:12px;color:var(--muted)}
+  .upload-tile {
+    border: 1.5px dashed var(--teal-mid);
+    border-radius: 18px;
+    min-height: 128px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    color: var(--muted); font-size: 0.76rem; font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+    background: transparent;
+  }
+  .upload-tile .plus { font-size: 1.5rem; color: var(--teal); line-height: 1; }
+  .upload-tile:active { background: var(--teal-soft); }
+  .notes-box {
+    width: 100%;
+    border: none;
+    border-radius: 16px;
+    background: var(--card);
+    padding: 14px 16px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--ink);
+    min-height: 80px;
+    resize: vertical;
+    box-shadow: var(--shadow);
+  }
+  .notes-box:focus { outline: 2px solid var(--teal-mid); }
+  .notes-k { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); font-weight: 800; margin: 6px 0 6px 4px; }
+  .storage-note { font-size: 0.72rem; color: var(--muted); margin-top: 16px; font-weight: 600; }
 
-/* archive */
-.archive-month{margin-bottom:14px}
-.archive-summary{display:flex;justify-content:space-between;align-items:center;cursor:pointer;gap:10px;flex-wrap:wrap}
-.archive-summary h3{font-size:18px;font-weight:600}
-.archive-stats{display:flex;gap:20px;font-family:var(--mono);font-size:13px;color:var(--muted);flex-wrap:wrap}
-.archive-detail{margin-top:14px;display:none}
-.archive-month.open .archive-detail{display:block}
+  /* ---------- Modal ---------- */
+  .modal-bg {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(69,55,65,0.45);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    z-index: 30;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-bg.open { display: flex; }
+  .modal {
+    background: var(--card);
+    border-radius: 26px 26px 0 0;
+    padding: 24px 20px 34px;
+    width: 100%;
+    max-width: 680px;
+    max-height: 88vh;
+    overflow-y: auto;
+    animation: rise 0.22s ease;
+  }
+  .modal h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 4px; }
+  .modal .m-section {
+    font-size: 0.72rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--teal);
+    margin: 20px 0 2px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--teal-soft);
+  }
+  .modal label { display: block; font-size: 0.74rem; font-weight: 800; color: var(--muted); margin: 12px 0 5px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .modal input, .modal textarea {
+    width: 100%;
+    border: none;
+    border-radius: 13px;
+    padding: 13px 14px;
+    font-size: 16px;
+    font-family: inherit;
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .modal input:focus, .modal textarea:focus { outline: 2px solid var(--teal-mid); }
+  .modal textarea { resize: vertical; min-height: 58px; }
+  .modal .btns { display: flex; gap: 10px; margin-top: 22px; }
+  .modal .btns button {
+    flex: 1; border: none; border-radius: 999px; padding: 15px;
+    font-size: 0.95rem; font-weight: 800; font-family: inherit; cursor: pointer;
+  }
+  .save { background: var(--teal); color: #fff; }
+  .cancel { background: var(--paper); color: var(--muted); }
 
-/* modal */
-.modal-bg{position:fixed;inset:0;background:rgba(91,56,41,.52);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
-.modal-bg.open{display:flex}
-.modal{background:#fff;border-radius:16px;padding:24px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto}
-.modal h3{font-size:20px;margin-bottom:14px}
-.field{margin-bottom:12px}
-.field label{display:block;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:4px}
-.field input,.field select{width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:9px;background:#fff}
-.field input:focus,.field select:focus{outline:2px solid var(--amber);border-color:var(--amber)}
-.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+  .empty { color: var(--muted); font-size: 0.85rem; padding: 6px 4px; font-weight: 600; }
+  input[type="file"] { display: none; }
+  .toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: var(--plum-deep); color: #fff;
+    border-radius: 999px; padding: 11px 22px;
+    font-size: 0.85rem; font-weight: 800;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    z-index: 40;
+    box-shadow: var(--shadow-lift);
+  }
+  .toast.show { opacity: 1; }
 
-/* toast + misc */
-#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--pine);color:#fff;padding:11px 20px;border-radius:99px;font-size:14px;font-weight:700;display:none;z-index:60}
-.empty{color:var(--muted);text-align:center;padding:26px 10px;font-size:14px}
-.section-title{font-size:18px;font-weight:600;margin:26px 0 12px;font-family:'Fraunces',serif}
-.note{font-size:12.5px;color:var(--muted);margin-top:10px}
-@media(max-width:600px){
-  .hd-top h1{font-size:21px}
-  .savebar{align-items:flex-start}
-  main{padding:18px 14px 60px}
-  .stat .num{font-size:22px}
-}
+  /* ---------- PIN lock ---------- */
+  .lock {
+    position: fixed; inset: 0;
+    background: linear-gradient(160deg, var(--plum) 0%, var(--plum-deep) 100%);
+    z-index: 100;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 26px;
+    padding: 24px;
+  }
+  .lock.hidden { display: none; }
+  .lock h2 {
+    font-family: "Fraunces", Georgia, serif;
+    color: #fff; font-size: 1.5rem; font-weight: 700;
+    text-align: center;
+  }
+  .lock h2 em { font-style: normal; color: var(--teal-mid); }
+  .lock .lock-sub { color: rgba(255,255,255,0.6); font-size: 0.85rem; font-weight: 700; margin-top: -16px; }
+  .pin-dots { display: flex; gap: 16px; }
+  .pin-dots span {
+    width: 15px; height: 15px; border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.45);
+    transition: background 0.12s, border-color 0.12s;
+  }
+  .pin-dots span.filled { background: var(--teal-mid); border-color: var(--teal-mid); }
+  .pin-dots.shake { animation: shake 0.35s ease; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-9px); }
+    50% { transform: translateX(9px); }
+    75% { transform: translateX(-5px); }
+  }
+  .pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .pin-pad button {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: "Nunito Sans", sans-serif;
+    cursor: pointer;
+    transition: background 0.1s, transform 0.1s;
+  }
+  .pin-pad button:active { background: rgba(255,255,255,0.28); transform: scale(0.94); }
+  .pin-pad button.ghost { background: transparent; font-size: 1.1rem; }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="hd-top">
-    <h1>Emily <span>&amp;</span> Hameed <span>-</span> Budget</h1>
-    <div class="hd-month" id="hdMonth"></div>
+<div class="lock" id="lockScreen">
+  <h2>Emergency <em>Hub</em></h2>
+  <div class="lock-sub">Enter code</div>
+  <div class="pin-dots" id="pinDots"><span></span><span></span><span></span><span></span></div>
+  <div class="pin-pad">
+    <button onclick="pinDigit('1')">1</button>
+    <button onclick="pinDigit('2')">2</button>
+    <button onclick="pinDigit('3')">3</button>
+    <button onclick="pinDigit('4')">4</button>
+    <button onclick="pinDigit('5')">5</button>
+    <button onclick="pinDigit('6')">6</button>
+    <button onclick="pinDigit('7')">7</button>
+    <button onclick="pinDigit('8')">8</button>
+    <button onclick="pinDigit('9')">9</button>
+    <button class="ghost"></button>
+    <button onclick="pinDigit('0')">0</button>
+    <button class="ghost" onclick="pinBack()">&#9003;</button>
   </div>
-  <div class="savebar">
-    <span class="sync-state saved" id="syncState">Saved on this device</span>
+</div>
+
+<div class="top">
+  <div class="wrap">
+    <div class="top-left">
+      <button class="back-btn" onclick="showPage('home')">&#8592;</button>
+      <h1 id="pageTitle">Emergency <em>Hub</em></h1>
+      <span class="sync-pill" id="syncPill">Local</span>
+    </div>
+    <button class="edit-toggle" id="editToggle" onclick="toggleEdit()">Edit</button>
   </div>
-  <nav>
-    <button class="active" data-view="dashboard">Dashboard</button>
-    <button data-view="emily">Emily</button>
-    <button data-view="hameed">Hameed</button>
-    <button data-view="income">Income</button>
-    <button data-view="debt">Debt</button>
-    <button data-view="goals">Goals</button>
-    <button data-view="receipts">Receipts</button>
-    <button data-view="archive">Past months</button>
-    <button data-view="notion">Firebase setup</button>
-  </nav>
-</header>
+</div>
 
-<main>
-  <!-- DASHBOARD -->
-  <section class="view active" id="view-dashboard">
-    <div class="view-head"><h2 id="dashTitle">Dashboard</h2></div>
-    <div class="grid cols-4" id="dashStats"></div>
-    <div class="grid cols-2" style="margin-top:16px">
-      <div class="card split-card">
-        <div class="stat"><div class="label">Emily's paycheck split</div></div>
-        <div class="split-bar" id="splitBar"></div>
-        <div class="split-legend">
-          <span><span class="dot" style="background:var(--amber)"></span>Personal holdback <b id="legHold"></b></span>
-          <span><span class="dot" style="background:var(--green)"></span>To household <b id="legHouse"></b></span>
-        </div>
-      </div>
-      <div class="card">
-        <div class="stat"><div class="label">Debt snapshot</div></div>
-        <div id="dashDebt"></div>
-      </div>
-    </div>
-    <div class="section-title">Goals in progress</div>
-    <div class="grid cols-2" id="dashGoals"></div>
-  </section>
+<div class="wrap">
 
-  <!-- EMILY'S BILLS -->
-  <section class="view" id="view-emily">
-    <div class="view-head">
-      <h2>Emily's bills</h2>
-      <button class="btn btn-primary" onclick="openBillModal(null,'Emily')">+ Add bill</button>
-      <p>Your personal bills, paid from your $800 holdback. Check one off when it's paid - everything resets automatically when a new month starts.</p>
+  <!-- COVER -->
+  <div class="page active" id="page-home">
+    <div class="cover-grid">
+      <button class="cover-btn c-contacts" onclick="showPage('contacts')">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.3 0 .7-.2 1l-2.3 2.2z"/></svg></div>
+        <div class="t">Contacts</div>
+        <div class="s">People &amp; work numbers</div>
+      </button>
+      <button class="cover-btn c-medical" onclick="showPage('medical')">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 3h4a1 1 0 0 1 1 1v5h5a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-5v5a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-5H4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h5V4a1 1 0 0 1 1-1z"/></svg></div>
+        <div class="t">Medical</div>
+        <div class="s">Allergies, meds &amp; doctors</div>
+      </button>
+      <button class="cover-btn c-docs" onclick="showPage('docs')">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm0 2.5L17.5 8H14V4.5zM8 12h8v2H8v-2zm0 4h8v2H8v-2z"/></svg></div>
+        <div class="t">Documents</div>
+        <div class="s">Insurance cards &amp; IDs</div>
+      </button>
+      <button class="cover-btn c-pets" onclick="showPage('pets')">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="10" r="2.2"/><circle cx="9.2" cy="5.8" r="2.4"/><circle cx="14.8" cy="5.8" r="2.4"/><circle cx="19" cy="10" r="2.2"/><path d="M12 10c-2.6 0-5.6 3-5.6 5.6 0 1.9 1.4 3 3.1 3 .9 0 1.7-.5 2.5-.5s1.6.5 2.5.5c1.7 0 3.1-1.1 3.1-3C17.6 13 14.6 10 12 10z"/></svg></div>
+        <div class="t">Pets</div>
+        <div class="s">Vets, vaccines &amp; records</div>
+      </button>
     </div>
-    <div class="card table-wrap">
-      <table>
-        <thead><tr><th></th><th>Bill</th><th>Amount</th><th>Category</th><th>Due</th><th></th></tr></thead>
-        <tbody id="billRowsEmily"></tbody>
-      </table>
-    </div>
-    <div class="grid cols-4" style="margin-top:16px" id="emilyTotals"></div>
-  </section>
+  </div>
 
-  <!-- HAMEED'S BILLS -->
-  <section class="view" id="view-hameed">
-    <div class="view-head">
-      <h2>Hameed's bills</h2>
-      <button class="btn btn-primary" onclick="openBillModal(null,'Hameed')">+ Add bill</button>
-      <p>Household bills, Hameed's personal bills, and shared expenses - paid from household money. Check one off when it's paid.</p>
-    </div>
-    <div class="card table-wrap">
-      <table>
-        <thead><tr><th></th><th>Bill</th><th>Amount</th><th>Who</th><th>Category</th><th>Due</th><th></th></tr></thead>
-        <tbody id="billRowsHameed"></tbody>
-      </table>
-    </div>
-    <div class="grid cols-4" style="margin-top:16px" id="hameedTotals"></div>
-  </section>
+  <!-- CONTACTS -->
+  <div class="page" id="page-contacts">
+    <input class="search" id="searchBox" placeholder="Search contacts…" oninput="renderContacts()">
 
-  <!-- INCOME -->
-  <section class="view" id="view-income">
-    <div class="view-head">
-      <h2>Income</h2>
-      <button class="btn btn-primary" onclick="openIncomeModal()">+ Add income</button>
-      <p>Paychecks for the month. Emily's $800 holdback stays hers; everything above it goes to household.</p>
+    <div class="owner-band">
+      <span class="owner-chip em">Em</span>
+      <span class="rule"></span>
+      <button class="add-btn" onclick="openContactForm('Em')">+ Add</button>
     </div>
-    <div class="card table-wrap">
-      <table>
-        <thead><tr><th>Source</th><th>Person</th><th>Amount</th><th>Holdback</th><th>To household</th><th></th></tr></thead>
-        <tbody id="incomeRows"></tbody>
-      </table>
-    </div>
-    <div class="grid cols-4" style="margin-top:16px" id="incomeTotals"></div>
-  </section>
+    <div id="contacts-Em"></div>
 
-  <!-- DEBT -->
-  <section class="view" id="view-debt">
-    <div class="view-head">
-      <h2>Debt</h2>
-      <button class="btn btn-primary" onclick="openDebtModal()">+ Add debt</button>
-      <p>Interest accrues automatically each month based on APR. Log a payment to bring the balance down and update the payoff estimate.</p>
+    <div class="owner-band">
+      <span class="owner-chip hameed">Hameed</span>
+      <span class="rule"></span>
+      <button class="add-btn" onclick="openContactForm('Hameed')">+ Add</button>
     </div>
-    <div class="grid cols-4" id="debtStats" style="margin-bottom:16px"></div>
-    <div class="grid cols-2" id="debtCards"></div>
-  </section>
+    <div id="contacts-Hameed"></div>
+  </div>
 
-  <!-- GOALS -->
-  <section class="view" id="view-goals">
-    <div class="view-head">
-      <h2>Goals</h2>
-      <button class="btn btn-primary" onclick="openGoalModal()">+ Add goal</button>
-      <p>Set a target, add money as you go, and watch the bar fill up. No deadline pressure - progress is progress.</p>
+  <!-- MEDICAL -->
+  <div class="page" id="page-medical">
+    <div class="owner-band">
+      <span class="owner-chip em">Em</span>
+      <span class="rule"></span>
     </div>
-    <div class="grid cols-2" id="goalCards"></div>
-  </section>
+    <div id="medical-Em"></div>
+    <div class="sub-band">
+      <h2>Em's Doctors</h2>
+      <button class="add-btn" onclick="openDoctorForm('Em')">+ Add doctor</button>
+    </div>
+    <div id="doctors-Em"></div>
 
-  <!-- RECEIPTS -->
-  <section class="view" id="view-receipts">
-    <div class="view-head">
-      <h2>Receipts &amp; documents</h2>
-      <p id="receiptsSub"></p>
+    <div class="owner-band">
+      <span class="owner-chip hameed">Hameed</span>
+      <span class="rule"></span>
     </div>
-    <div class="dropzone" id="dropzone">
-      <p><b>Drop a file here</b> or</p>
-      <p style="margin-top:8px"><button class="btn btn-ghost btn-sm" onclick="document.getElementById('fileInput').click()">Choose a file</button></p>
-      <p class="note">Images and PDFs up to 2&nbsp;MB. Files are attached to the current month.</p>
-      <input type="file" id="fileInput" accept="image/*,.pdf" style="display:none" multiple>
+    <div id="medical-Hameed"></div>
+    <div class="sub-band">
+      <h2>Hameed's Doctors</h2>
+      <button class="add-btn" onclick="openDoctorForm('Hameed')">+ Add doctor</button>
     </div>
-    <div class="card" id="receiptList"></div>
-  </section>
+    <div id="doctors-Hameed"></div>
+  </div>
 
-  <!-- ARCHIVE -->
-  <section class="view" id="view-archive">
-    <div class="view-head">
-      <h2>Past months</h2>
-      <p>Closed months live here, out of the way. Tap a month to see exactly what was paid, what wasn't, and any receipts from that month.</p>
+  <!-- DOCUMENTS -->
+  <div class="page" id="page-docs">
+    <div class="owner-band">
+      <span class="owner-chip em">Em</span>
+      <span class="rule"></span>
     </div>
-    <div id="archiveList"></div>
-  </section>
-  <!-- FIREBASE SETUP -->
-  <section class="view" id="view-notion">
-    <div class="view-head">
-      <h2>Firebase setup</h2>
-      <p>Firebase is the shared source of truth. Once configured, edits auto-save and both devices see the same planner.</p>
-    </div>
-    <div class="grid cols-2">
-      <div class="card">
-        <h3>Shared app setup</h3>
-        <p class="note">Paste your Firebase web app config into <b>firebase-config.js</b>, enable Anonymous Auth, and add the Firestore rules from DEPLOY.md.</p>
-        <div class="debt-row"><span>Hosting</span><span class="v">GitHub Pages</span></div>
-        <div class="debt-row"><span>Shared data</span><span class="v">Firebase Firestore</span></div>
-        <div class="debt-row"><span>Sign-in screen</span><span class="v">None - anonymous auth</span></div>
-      </div>
-      <div class="card">
-        <h3>Status note</h3>
-        <p class="note">The header shows whether the planner is synced with Firebase or only saved on this device.</p>
-        <p class="note">If Firebase is not configured yet, the planner still works locally so you can keep testing the design.</p>
-      </div>
-    </div>
-  </section>
-</main>
+    <div class="docs-grid" id="docs-Em"></div>
+    <div class="notes-k">Em — policy numbers &amp; notes</div>
+    <textarea class="notes-box" id="notes-Em" placeholder="Policy numbers, member IDs, group numbers…" onchange="saveNotes('Em')"></textarea>
 
-<div class="modal-bg" id="modalBg"><div class="modal" id="modalBox"></div></div>
-<div id="toast"></div>
+    <div class="owner-band">
+      <span class="owner-chip hameed">Hameed</span>
+      <span class="rule"></span>
+    </div>
+    <div class="docs-grid" id="docs-Hameed"></div>
+    <div class="notes-k">Hameed — policy numbers &amp; notes</div>
+    <textarea class="notes-box" id="notes-Hameed" placeholder="Policy numbers, member IDs, group numbers…" onchange="saveNotes('Hameed')"></textarea>
 
-<script src="firebase-config.js"></script>
+    <div class="storage-note">Saved on this device in this browser. Screenshots of cards upload fastest. Add them once on each phone.</div>
+  </div>
+
+  <!-- PETS -->
+  <div class="page" id="page-pets">
+    <div class="owner-band">
+      <span class="owner-chip pets">Vet Contacts</span>
+      <span class="rule"></span>
+      <button class="add-btn" onclick="openContactForm('Vets')">+ Add</button>
+    </div>
+    <div id="contacts-Vets"></div>
+
+    <div class="owner-band">
+      <span class="owner-chip pets">Pets</span>
+      <span class="rule"></span>
+      <button class="add-btn" onclick="openPetForm()">+ Add pet</button>
+    </div>
+    <div id="pets-list"></div>
+    <div class="storage-note">Vaccine records and photos are saved on this device. Use the Share button on any record to send it by text or email.</div>
+  </div>
+
+</div>
+
+<input type="file" id="fileInput" accept="image/*,application/pdf" onchange="handleFile(event)">
+
+<!-- Contact form -->
+<div class="modal-bg" id="formModal">
+  <div class="modal">
+    <h3 id="formTitle">Add contact</h3>
+    <label>Name</label>
+    <input id="f-name" placeholder="e.g. Mom, Boss, Clinic name">
+    <label>Relationship / role</label>
+    <input id="f-rel" placeholder="e.g. Mother, Charge nurse, Emergency vet">
+    <label>Phone</label>
+    <input id="f-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="e.g. 865-555-0123">
+    <label>Phone label (optional)</label>
+    <input id="f-phone-label" placeholder="e.g. Cell, Main line, After hours">
+    <label>Notes (optional)</label>
+    <textarea id="f-notes" placeholder="Address, hours, account #…"></textarea>
+    <div class="btns">
+      <button class="cancel" onclick="closeModal('formModal')">Cancel</button>
+      <button class="save" onclick="saveContact()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Doctor form -->
+<div class="modal-bg" id="doctorModal">
+  <div class="modal">
+    <h3 id="doctorTitle">Add doctor</h3>
+    <div class="m-section">Doctor details</div>
+    <label>Name</label>
+    <input id="dr-name" placeholder="e.g. Dr. Patel">
+    <label>Specialty / role</label>
+    <input id="dr-spec" placeholder="e.g. Primary care, Cardiologist, Dentist">
+    <div class="m-section">Contact information</div>
+    <label>Office phone</label>
+    <input id="dr-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="e.g. 865-555-0123">
+    <label>Practice / location (optional)</label>
+    <input id="dr-office" placeholder="e.g. Covenant Medical Group, Powell">
+    <label>Notes (optional)</label>
+    <textarea id="dr-notes" placeholder="Portal login hint, referral needed, preferred pharmacy…"></textarea>
+    <div class="btns">
+      <button class="cancel" onclick="closeModal('doctorModal')">Cancel</button>
+      <button class="save" onclick="saveDoctor()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Profile form (Em / Hameed) -->
+<div class="modal-bg" id="profileModal">
+  <div class="modal">
+    <h3 id="profileTitle">Edit profile</h3>
+    <label>Date of birth (optional)</label>
+    <input id="p-dob" placeholder="e.g. 03/14/1992">
+    <label>Blood type (optional)</label>
+    <input id="p-blood" placeholder="e.g. O+">
+    <label>Allergies</label>
+    <textarea id="p-allergies" placeholder="e.g. Penicillin — hives. Write None if none."></textarea>
+    <label>Conditions (optional)</label>
+    <textarea id="p-conditions" placeholder="e.g. Hypertension, asthma"></textarea>
+    <label>Other notes (optional)</label>
+    <textarea id="p-notes" placeholder="e.g. Preferred hospital"></textarea>
+    <div class="btns">
+      <button class="cancel" onclick="closeModal('profileModal')">Cancel</button>
+      <button class="save" onclick="saveProfile()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Pet form -->
+<div class="modal-bg" id="petModal">
+  <div class="modal">
+    <h3 id="petTitle">Add pet</h3>
+    <label>Name</label>
+    <input id="pet-name" placeholder="e.g. Bia">
+    <label>Species / breed</label>
+    <input id="pet-breed" placeholder="e.g. Beagle">
+    <label>Date of birth (optional)</label>
+    <input id="pet-dob" placeholder="e.g. 06/2019 or approximate">
+    <label>Microchip # (optional)</label>
+    <input id="pet-chip" inputmode="numeric" placeholder="e.g. 985112004567890">
+    <label>Allergies</label>
+    <textarea id="pet-allergies" placeholder="e.g. Chicken. Write None if none."></textarea>
+    <label>Conditions (optional)</label>
+    <textarea id="pet-conditions" placeholder="e.g. Seasonal skin allergies"></textarea>
+    <label>Other notes (optional)</label>
+    <textarea id="pet-notes" placeholder="e.g. Food brand, boarding info, escapes fences"></textarea>
+    <div class="btns">
+      <button class="cancel" onclick="closeModal('petModal')">Cancel</button>
+      <button class="save" onclick="savePet()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Med form -->
+<div class="modal-bg" id="medModal">
+  <div class="modal">
+    <h3 id="medTitle">Add medication</h3>
+    <label>Medication</label>
+    <input id="m-name" placeholder="e.g. Lisinopril">
+    <label>Dose / schedule</label>
+    <input id="m-dose" placeholder="e.g. 10 mg daily, AM">
+    <label>Notes (optional)</label>
+    <input id="m-notes" placeholder="e.g. take with food, refill at CVS">
+    <div class="btns">
+      <button class="cancel" onclick="closeModal('medModal')">Cancel</button>
+      <button class="save" onclick="saveMed()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Doc rename form -->
+<div class="modal-bg" id="docModal">
+  <div class="modal">
+    <h3>Rename document</h3>
+    <label>Name</label>
+    <input id="d-name" placeholder="e.g. BCBS card — front">
+    <label>Tag (optional)</label>
+    <input id="d-tag" placeholder="e.g. Health, Dental, Rabies 2026">
+    <div class="btns">
+      <button class="cancel" onclick="closeModal('docModal')">Cancel</button>
+      <button class="save" onclick="saveDocMeta()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="viewer" id="viewer">
+  <div class="viewer-bar">
+    <button onclick="closeViewer()">&#10005; Close</button>
+    <div class="vb-group">
+      <button onclick="downloadCurrentDoc()">Save</button>
+      <button class="primary" onclick="shareCurrentDoc()">Share</button>
+    </div>
+  </div>
+  <div class="viewer-body" id="viewerBody"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-/* ================= STORAGE + FIREBASE SYNC =================
-   Works locally without setup. Once firebase-config.js is filled in,
-   changes auto-save to Firestore so both devices see the same planner. */
-const STORE_KEY='eh_budget_v1';
-let memStore=null;
-let hasUnsavedChanges=false;
-let saveTimer=null;
-let firebaseSync={ready:false,db:null,docRef:null,onSnapshot:null,setDoc:null,serverTimestamp:null,lastRemoteAt:null};
-async function loadState(){
-  if(window.storage&&window.storage.get){
-    try{const r=await window.storage.get(STORE_KEY);return r?JSON.parse(r.value):null}catch(e){return null}
-  }
-  try{const r=localStorage.getItem(STORE_KEY);return r?JSON.parse(r):null}catch(e){return memStore}
-}
-async function saveState(){
-  const s=JSON.stringify(state);
-  if(window.storage&&window.storage.set){
-    try{await window.storage.set(STORE_KEY,s);return}catch(e){}
-  }
-  try{localStorage.setItem(STORE_KEY,s)}catch(e){memStore=state}
-}
-function markDirty(msg){
-  hasUnsavedChanges=true;
-  updateSaveUI();
-  queueAutoSave();
-  if(msg)toast(msg+' - saving');
-}
-function markSaved(msg){
-  hasUnsavedChanges=false;
-  updateSaveUI(msg||'Saved');
-}
-function updateSaveUI(msg){
-  const el=$('syncState');
-  if(!el)return;
-  el.classList.toggle('dirty',hasUnsavedChanges);
-  el.classList.toggle('saved',!hasUnsavedChanges);
-  el.textContent=msg||(hasUnsavedChanges?'Saving changes...':(firebaseSync.ready?'Synced with Firebase':'Saved on this device'));
-}
-function queueAutoSave(){
-  clearTimeout(saveTimer);
-  saveTimer=setTimeout(()=>saveCurrentState(),700);
-}
-async function saveCurrentState(){
-  if(!state)return;
-  await saveState();
-  if(firebaseSync.ready){
-    try{
-      const updatedAt=new Date().toISOString();
-      firebaseSync.lastRemoteAt=updatedAt;
-      await firebaseSync.setDoc(firebaseSync.docRef,{state,updatedAt,updatedBy:'planner'}, {merge:true});
-      markSaved('Synced with Firebase');
-      return;
-    }catch(e){
-      markSaved('Saved here; Firebase sync failed');
-      toast('Saved on this device, but Firebase sync failed.');
-      return;
+/* =========================================================
+   FIREBASE SYNC SETUP
+   1. Paste your config from the Firebase console:
+      Project settings -> General -> Your apps -> SDK setup and config
+   2. Set HOUSEHOLD_ID to a random phrase only you and Hameed know
+      (it acts like a shared key for your data - make it unguessable).
+   Leave the placeholders as-is to run in local-only mode
+   (everything saves to this device's browser instead).
+   ========================================================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyBJpoiiJrJHXjS7mYc_Geb5OfFrOEnaAcY",
+  authDomain: "emergency-contact-hub.firebaseapp.com",
+  projectId: "emergency-contact-hub",
+  storageBucket: "emergency-contact-hub.firebasestorage.app",
+  messagingSenderId: "124174203616",
+  appId: "1:124174203616:web:d50691c55c1f5f517eee85"
+};
+const HID_BASE = "plum-beagle-7734-tn";
+const PIN_SALT = "ehub-plum-2026";
+const PIN_HASH = "51d13a5baf7779932fc41cdddfab18108529de57ef1209776a6309271cd950fa";
+let HOUSEHOLD_ID = null; // derived from the PIN on unlock
+
+// ---------- local cache (used alone in local mode, as offline cache in sync mode) ----------
+const mem = {};
+const store = {
+  get(k, fallback) {
+    try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : fallback; }
+    catch(e) { return mem[k] !== undefined ? mem[k] : fallback; }
+  },
+  set(k, v) {
+    try { localStorage.setItem(k, JSON.stringify(v)); mem[k] = v; }
+    catch(e) {
+      mem[k] = v;
+      if (e && (e.name === 'QuotaExceededError' || e.code === 22)) alert('Local storage is full - remove an old document or use a smaller photo.');
     }
   }
-  markSaved('Saved on this device');
+};
+
+const PEOPLE = ['Em', 'Hameed'];
+const CORE_KEYS = ['contacts', 'doctors', 'profiles', 'meds', 'pets', 'notes'];
+
+let data = {
+  contacts: store.get('eh5_contacts', []),   // {owner:'Em'|'Hameed'|'Vets', name, rel, phone, phoneLabel, notes}
+  doctors: store.get('eh5_doctors', []),     // {owner, name, spec, phone, office, notes}
+  profiles: store.get('eh5_profiles', {}),   // {Em:{}, Hameed:{}}
+  meds: store.get('eh5_meds', []),           // {owner: 'Em'|'Hameed'|petId, name, dose, notes}
+  pets: store.get('eh5_pets', []),           // {id, name, breed, dob, chip, allergies, conditions, notes}
+  notes: store.get('eh5_notes', { Em: '', Hameed: '' }),
+  docs: store.get('eh5_docs', []),           // {id, kind:'doc', owner, name, tag, type, data, createdAt}
+  petdocs: store.get('eh5_petdocs', []),     // {id, kind:'petdoc', petId, name, tag, type, data, createdAt}
+};
+
+// Ensure every stored file has an id (older saves)
+[...data.docs, ...data.petdocs].forEach(f => { if (!f.id) f.id = 'f_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7); });
+
+// Seed Bia on first run
+if (!store.get('eh5_init', false)) {
+  if (!data.pets.length) {
+    data.pets.push({ id: 'pet_' + Date.now(), name: 'Bia', breed: 'Beagle', dob: '', chip: '', allergies: '', conditions: '', notes: '' });
+    store.set('eh5_pets', data.pets);
+  }
+  store.set('eh5_init', true);
 }
-function hasFirebaseConfig(){
-  const cfg=window.EH_FIREBASE_CONFIG||{};
-  return !!(cfg.apiKey&&cfg.projectId&&cfg.appId&&!String(cfg.apiKey).includes('PASTE_'));
+
+const LOCAL_KEYS = { contacts:'eh5_contacts', doctors:'eh5_doctors', profiles:'eh5_profiles', meds:'eh5_meds', pets:'eh5_pets', notes:'eh5_notes', docs:'eh5_docs', petdocs:'eh5_petdocs' };
+function cacheLocal(key) { store.set(LOCAL_KEYS[key], data[key]); }
+
+// ---------- Firebase ----------
+let fb = null;
+
+function setSync(state) {
+  const pill = document.getElementById('syncPill');
+  if (!pill) return;
+  pill.classList.remove('synced', 'error');
+  if (state === 'synced') { pill.textContent = 'Synced'; pill.classList.add('synced'); }
+  else if (state === 'error') { pill.textContent = 'Sync error'; pill.classList.add('error'); }
+  else { pill.textContent = 'Local'; }
 }
-async function initFirebaseSync(){
-  if(!hasFirebaseConfig()){updateSaveUI('Saved on this device - add Firebase config to sync');return}
-  try{
-    updateSaveUI('Connecting to Firebase...');
-    const appMod=await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js');
-    const authMod=await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js');
-    const fireMod=await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
-    const app=appMod.initializeApp(window.EH_FIREBASE_CONFIG);
-    const auth=authMod.getAuth(app);
-    await authMod.signInAnonymously(auth);
-    const db=fireMod.getFirestore(app);
-    const docPath=window.EH_FIREBASE_DOC_PATH||'budgets/emily-hameed';
-    firebaseSync={ready:true,db,docRef:fireMod.doc(db,...docPath.split('/')),onSnapshot:fireMod.onSnapshot,setDoc:fireMod.setDoc,serverTimestamp:fireMod.serverTimestamp,lastRemoteAt:null};
-    const snap=await fireMod.getDoc(firebaseSync.docRef);
-    if(snap.exists()&&snap.data().state){
-      state=ensureStateShape(snap.data().state);
-      firebaseSync.lastRemoteAt=snap.data().updatedAt||null;
-      await saveState();
-      renderAll();
-      markSaved('Loaded shared Firebase data');
-    }else{
-      await saveCurrentState();
-    }
-    firebaseSync.onSnapshot(firebaseSync.docRef,snap=>{
-      if(!snap.exists()||!snap.data().state)return;
-      const updatedAt=snap.data().updatedAt||null;
-      if(updatedAt&&updatedAt===firebaseSync.lastRemoteAt)return;
-      firebaseSync.lastRemoteAt=updatedAt;
-      state=ensureStateShape(snap.data().state);
-      saveState();
-      renderAll();
-      markSaved('Updated from Firebase');
-    });
-    markSaved('Synced with Firebase');
-  }catch(e){
-    firebaseSync.ready=false;
-    updateSaveUI('Firebase not connected - saved on this device');
-    toast('Firebase could not connect. Check firebase-config.js and Firestore rules.');
+
+function configLooksReal() {
+  return firebaseConfig.projectId && firebaseConfig.projectId.indexOf('PASTE') !== 0 &&
+         firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf('PASTE') !== 0;
+}
+
+async function initFirebase() {
+  if (!configLooksReal()) { setSync('local'); return; }
+  try {
+    const appM = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
+    const fsM = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+    const app = appM.initializeApp(firebaseConfig);
+    const db = fsM.getFirestore(app);
+    // Anonymous sign-in (enable it in Firebase console -> Authentication).
+    // If it's not enabled, we continue anyway - test-mode rules will still allow access.
+    try {
+      const auM = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
+      await auM.signInAnonymously(auM.getAuth(app));
+    } catch (e) { console.warn('Anonymous auth unavailable:', e && e.code); }
+
+    fb = {
+      db,
+      doc: fsM.doc, setDoc: fsM.setDoc, deleteDoc: fsM.deleteDoc,
+      collection: fsM.collection, onSnapshot: fsM.onSnapshot
+    };
+    fb.coreRef = fb.doc(db, 'hubs', HOUSEHOLD_ID);
+    fb.fileRef = id => fb.doc(db, 'hubs', HOUSEHOLD_ID, 'files', id);
+    fb.filesCol = fb.collection(db, 'hubs', HOUSEHOLD_ID, 'files');
+
+    fb.onSnapshot(fb.coreRef, snap => {
+      if (!snap.exists()) {
+        bootstrapUpload();
+      } else {
+        const d = snap.data() || {};
+        CORE_KEYS.forEach(k => { if (d[k] !== undefined) { data[k] = d[k]; cacheLocal(k); } });
+        renderAll();
+      }
+      setSync('synced');
+    }, err => { console.error(err); setSync('error'); });
+
+    fb.onSnapshot(fb.filesCol, snap => {
+      const docs = [], petdocs = [];
+      snap.forEach(s => {
+        const f = s.data();
+        (f.kind === 'petdoc' ? petdocs : docs).push(f);
+      });
+      const byTime = (a, b) => (a.createdAt || 0) - (b.createdAt || 0);
+      data.docs = docs.sort(byTime);
+      data.petdocs = petdocs.sort(byTime);
+      cacheLocal('docs'); cacheLocal('petdocs');
+      renderDocs(); renderPets();
+      setSync('synced');
+    }, err => { console.error(err); setSync('error'); });
+  } catch (e) {
+    console.error('Firebase init failed:', e);
+    setSync('error');
   }
 }
 
-/* ================= HELPERS ================= */
-const $=id=>document.getElementById(id);
-const fmt=n=>(n<0?'-':'')+'$'+Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
-const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
-const monthKey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
-const keyLabel=k=>{const[y,m]=k.split('-');return MONTHS[+m-1]+' '+y};
-function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';clearTimeout(t._x);t._x=setTimeout(()=>t.style.display='none',2600)}
-function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function personTag(p){
-  if(p==='Both')return'<span class="tag both">Both</span>';
-  if(p==='Emily')return'<span class="tag emily">Emily</span>';
-  return'<span class="tag hameed">Hameed</span>';
+// First device to connect pushes its local data up
+function bootstrapUpload() {
+  const payload = {};
+  CORE_KEYS.forEach(k => payload[k] = data[k]);
+  fb.setDoc(fb.coreRef, payload, { merge: true }).catch(err => { console.error(err); setSync('error'); });
+  [...data.docs, ...data.petdocs].forEach(f => {
+    fb.setDoc(fb.fileRef(f.id), f).catch(err => { console.error(err); setSync('error'); });
+  });
 }
 
-/* ================= SEED DATA (from your Notion export) ================= */
-function seedState(){
-  return {
-    currentMonth:'2026-07',
-    incomes:[
-      {id:uid(),source:'Parkwest',person:'Emily',amount:1800,holdback:800},
-      {id:uid(),source:'Security',person:'Hameed',amount:2200,holdback:0}
-    ],
-    bills:[
-      {id:uid(),name:'Mortgage',amount:1800,person:'Hameed',category:'Housing',due:1,paid:true,debtId:'d_house'},
-      {id:uid(),name:'Water',amount:100,person:'Hameed',category:'Housing',due:null,paid:false,debtId:null},
-      {id:uid(),name:'Internet',amount:65,person:'Hameed',category:'Housing',due:null,paid:false,debtId:null},
-      {id:uid(),name:'Electricity',amount:180,person:'Hameed',category:'Housing',due:null,paid:false,debtId:null},
-      {id:uid(),name:'Phone',amount:72,person:'Emily',category:'Phone',due:null,paid:false,debtId:null},
-      {id:uid(),name:"Hameed's School",amount:1200,person:'Hameed',category:'Other',due:null,paid:false,debtId:null},
-      {id:uid(),name:'Groceries',amount:1000,person:'Both',category:'Groceries',due:null,paid:false,debtId:null},
-      {id:uid(),name:'Netflix',amount:0,person:'Emily',category:'Subscriptions',due:null,paid:false,debtId:null},
-      {id:uid(),name:'Hulu',amount:0,person:'Hameed',category:'Subscriptions',due:null,paid:false,debtId:null},
-      {id:uid(),name:'HBO',amount:0,person:'Emily',category:'Subscriptions',due:null,paid:false,debtId:null},
-      {id:uid(),name:'Spotify',amount:0,person:'Emily',category:'Subscriptions',due:null,paid:false,debtId:null},
-      {id:uid(),name:'ChatGPT',amount:20,person:'Emily',category:'Subscriptions',due:null,paid:false,debtId:null},
-      {id:uid(),name:'Gas (H)',amount:100,person:'Hameed',category:'Transportation',due:null,paid:false,debtId:null},
-      {id:uid(),name:'Gas (E)',amount:80,person:'Emily',category:'Transportation',due:null,paid:false,debtId:null},
-      {id:uid(),name:'Car Insurance',amount:176.06,person:'Emily',category:'Transportation',due:null,paid:false,debtId:null},
-      {id:uid(),name:'YouTube',amount:0,person:'Hameed',category:'Subscriptions',due:null,paid:false,debtId:null},
-      {id:uid(),name:'Loan - TVA',amount:200,person:'Hameed',category:'Debt payment',due:25,paid:false,debtId:'d_tva'},
-      {id:uid(),name:'Loan - 1st Horizon',amount:294.56,person:'Hameed',category:'Debt payment',due:15,paid:false,debtId:'d_horizon'},
-      {id:uid(),name:'Credit Cards',amount:0,person:'Both',category:'Debt payment',due:null,paid:false,debtId:null}
-    ],
-    debts:[
-      {id:'d_horizon',name:'1st Horizon (H)',apr:13,type:'Loan',due:15,balance:10390.52,startBalance:10390.52,minPayment:294.56,status:'Paused',totalPaid:0},
-      {id:'d_tva',name:'TVA (H)',apr:0,type:'Loan',due:25,balance:9788.08,startBalance:9788.08,minPayment:200,status:'Active',totalPaid:0},
-      {id:'d_ornl',name:'ORNL (H)',apr:0,type:'Loan',due:28,balance:10266.74,startBalance:10266.74,minPayment:0,status:'Active',totalPaid:0},
-      {id:'d_mike',name:'Mike (H)',apr:0,type:'Personal Loan',due:5,balance:2000,startBalance:2000,minPayment:0,status:'Active',totalPaid:0},
-      {id:'d_apple',name:'Apple (H)',apr:0,type:'Card',due:null,balance:500,startBalance:500,minPayment:0,status:'Active',totalPaid:0},
-      {id:'d_house',name:'HOUSE',apr:5.49,type:'Mortgage',due:1,balance:255670.26,startBalance:257470.26,minPayment:1800,status:'Active',totalPaid:1800}
-    ],
-    goals:[],
-    paymentHistory:[],
-    receipts:{},   /* {monthKey:[{id,name,type,size,data,ts}]} */
-    archives:{}    /* {monthKey:{bills:[...],incomes:[...],totals:{...}}} */
+function persist(key) {
+  cacheLocal(key);
+  if (fb && CORE_KEYS.indexOf(key) !== -1) {
+    fb.setDoc(fb.coreRef, { [key]: data[key] }, { merge: true }).catch(err => { console.error(err); setSync('error'); });
+  }
+}
+
+let editing = false;
+let contactIndex = -1, contactOwner = null;
+let doctorIndex = -1, doctorOwner = null;
+let profileOwner = null;
+let petIndex = -1;
+let medIndex = -1, medOwner = null;
+let docIndex = -1, docCollection = 'docs', uploadTarget = null;
+
+// ---------- helpers ----------
+function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+function jsq(s) { return String(s || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+function telHref(num) { return 'tel:' + String(num).replace(/[^\d+]/g, ''); }
+function smsHref(num) { return 'sms:' + String(num).replace(/[^\d+]/g, ''); }
+function initials(name) { return (name || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0].toUpperCase()).join(''); }
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.classList.remove('show'), 1800);
+}
+function copyNum(num) {
+  const doFallback = () => {
+    const ta = document.createElement('textarea');
+    ta.value = num; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); toast('Copied'); } catch (e) { toast('Could not copy'); }
+    document.body.removeChild(ta);
   };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(num).then(() => toast('Copied')).catch(doFallback);
+  } else doFallback();
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function dial(url) {
+  try { window.top.location.href = url; return; } catch (e) {}
+  try { const w = window.open(url, '_top'); if (w !== null) return; } catch (e) {}
+  try { const w = window.open(url, '_blank'); if (w !== null) return; } catch (e) {}
+  window.location.href = url;
 }
 
-function ensureStateShape(s){
-  s=s||seedState();
-  s.incomes=s.incomes||[];
-  s.bills=s.bills||[];
-  s.debts=s.debts||[];
-  s.goals=s.goals||[];
-  s.receipts=s.receipts||{};
-  s.archives=s.archives||{};
-  s.paymentHistory=s.paymentHistory||[];
-  s.debts.forEach(d=>{
-    if(!d.id)d.id=uid();
-    if(d.startBalance==null)d.startBalance=d.balance||0;
-    if(d.totalPaid==null)d.totalPaid=0;
-    if(!d.status)d.status='Active';
-  });
-  return s;
+const PHONE_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.3 0 .7-.2 1l-2.3 2.2z"/></svg>';
+const MSG_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>';
+const COPY_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>';
+const SHARE_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.1c-.8 0-1.5.3-2 .8l-7.1-4.2c.1-.2.1-.5.1-.7s0-.5-.1-.7L16 7.2c.5.5 1.2.8 2 .8 1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3c0 .2 0 .5.1.7L8 9.8C7.5 9.3 6.8 9 6 9c-1.7 0-3 1.3-3 3s1.3 3 3 3c.8 0 1.5-.3 2-.8l7.1 4.2c-.1.2-.1.4-.1.6 0 1.6 1.3 2.9 3 2.9s3-1.3 3-2.9-1.3-2.9-3-2.9z"/></svg>';
+
+// ---------- pages ----------
+const PAGE_TITLES = {
+  home: 'Emergency <em>Hub</em>',
+  contacts: 'Contacts',
+  medical: 'Medical',
+  docs: 'Documents',
+  pets: 'Pets'
+};
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.getElementById('pageTitle').innerHTML = PAGE_TITLES[name];
+  document.body.classList.toggle('subpage', name !== 'home');
+  window.scrollTo(0, 0);
 }
 
-function debtHistory(id){
-  return (state.paymentHistory||[]).filter(h=>h.debtId===id).sort((a,b)=>(b.ts||'').localeCompare(a.ts||''));
-}
-function recordDebtEvent(debtId,type,amount,balanceAfter,note){
-  if(!state.paymentHistory)state.paymentHistory=[];
-  state.paymentHistory.unshift({id:uid(),debtId,type,amount:+amount||0,balanceAfter:+balanceAfter||0,note:note||'',ts:new Date().toISOString()});
-}
-function debtPaidThisMonth(d){
-  const mk=state.currentMonth;
-  const hasHistory=debtHistory(d.id).some(h=>(h.ts||'').slice(0,7)===mk&&h.amount>0&&/payment/i.test(h.type));
-  const hasBill=state.bills.some(b=>b.debtId===d.id&&b.paid);
-  return hasHistory||hasBill;
+// ---------- edit mode ----------
+function toggleEdit() {
+  editing = !editing;
+  document.body.classList.toggle('editing', editing);
+  const btn = document.getElementById('editToggle');
+  btn.textContent = editing ? 'Done' : 'Edit';
+  btn.classList.toggle('on', editing);
 }
 
-/* ================= MONTH ROLLOVER =================
-   Runs on every load. If the real month is past state.currentMonth:
-   - archive the finished month (bills + statuses + totals)
-   - accrue one month of interest on every ACTIVE debt with an APR
-   - reset all bill checkboxes
-   Handles multiple skipped months too.                          */
-function monthsBetween(a,b){const[ay,am]=a.split('-').map(Number),[by,bm]=b.split('-').map(Number);return (by-ay)*12+(bm-am)}
-function rollover(){
-  const nowKey=monthKey(new Date());
-  let gap=monthsBetween(state.currentMonth,nowKey);
-  if(gap<=0)return false;
-  while(gap>0){
-    const closing=state.currentMonth;
-    const totals=computeTotals();
-    state.archives[closing]={
-      bills:state.bills.map(b=>({name:b.name,amount:b.amount,person:b.person,category:b.category,paid:b.paid})),
-      incomes:state.incomes.map(i=>({...i})),
-      totals
-    };
-    /* accrue interest on active debts with APR */
-    state.debts.forEach(d=>{
-      if(d.status==='Active'&&d.apr>0&&d.balance>0){
-        const interest=+(d.balance*(d.apr/100/12)).toFixed(2);
-        d.balance=+(d.balance+interest).toFixed(2);
-        recordDebtEvent(d.id,'Monthly interest',-interest,d.balance,'Interest accrued for '+keyLabel(closing));
-      }
-    });
-    /* reset checkboxes for the new month */
-    state.bills.forEach(b=>b.paid=false);
-    const[y,m]=closing.split('-').map(Number);
-    const next=new Date(y,m,1); /* m is 1-based, so this is next month */
-    state.currentMonth=monthKey(next);
-    gap--;
-  }
-  return true;
+// ---------- shared rows ----------
+function numRow(num, label) {
+  const t = telHref(num), s = smsHref(num);
+  return '<div class="num-row">' +
+    '<span class="num-label">' + esc(num) + (label ? '<small>' + esc(label) + '</small>' : '') + '</span>' +
+    '<a class="act call" href="' + t + '" target="_top" onclick="dial(\'' + t + '\');return false;">' + PHONE_SVG + 'Call</a>' +
+    '<a class="act text" href="' + s + '" target="_top" onclick="dial(\'' + s + '\');return false;">' + MSG_SVG + '</a>' +
+    '<button class="act copy" onclick="copyNum(\'' + jsq(num) + '\')">' + COPY_SVG + '</button>' +
+    '</div>';
 }
 
-function computeTotals(){
-  const billTotal=state.bills.reduce((s,b)=>s+(+b.amount||0),0);
-  const paidTotal=state.bills.filter(b=>b.paid).reduce((s,b)=>s+(+b.amount||0),0);
-  const income=state.incomes.reduce((s,i)=>s+(+i.amount||0),0);
-  const holdback=state.incomes.reduce((s,i)=>s+(+i.holdback||0),0);
-  const household=income-holdback;
-  return{billTotal,paidTotal,unpaid:billTotal-paidTotal,income,holdback,household,leftover:household-billTotal};
+// ---------- contacts ----------
+function matchesSearch(c, q) {
+  if (!q) return true;
+  return [c.name, c.rel, c.phone, c.notes].join(' ').toLowerCase().includes(q);
 }
-
-/* ================= DEBT MATH ================= */
-function payoffEstimate(d){
-  const B=d.balance,P=d.minPayment,r=d.apr/100/12;
-  if(B<=0)return{months:0,label:'Paid off !'};
-  if(P<=0)return{months:null,label:'Set a monthly payment to see a payoff date'};
-  if(r===0){const n=Math.ceil(B/P);return{months:n,label:payoffLabel(n)}}
-  const monthlyInterest=B*r;
-  if(P<=monthlyInterest)return{months:null,label:'Payment does not cover monthly interest ('+fmt(monthlyInterest)+')'};
-  const n=Math.ceil(-Math.log(1-r*B/P)/Math.log(1+r));
-  return{months:n,label:payoffLabel(n)};
-}
-function payoffLabel(n){
-  const d=new Date();d.setMonth(d.getMonth()+n);
-  const yrs=Math.floor(n/12),mos=n%12;
-  let t=yrs?yrs+' yr'+(yrs>1?'s':''):'';
-  if(mos)t+=(t?' ':'')+mos+' mo';
-  return(t||'0 mo')+' - '+MONTHS[d.getMonth()].slice(0,3)+' '+d.getFullYear();
-}
-
-/* ================= RENDER: DASHBOARD ================= */
-function renderDashboard(){
-  const t=computeTotals();
-  $('dashTitle').textContent=keyLabel(state.currentMonth)+' at a glance';
-  const paidCount=state.bills.filter(b=>b.paid).length;
-  $('dashStats').innerHTML=`
-    <div class="card stat"><div class="label">Income this month</div><div class="num">${fmt(t.income)}</div><div class="sub">${fmt(t.household)} to household</div></div>
-    <div class="card stat"><div class="label">Bills total</div><div class="num">${fmt(t.billTotal)}</div><div class="sub">${paidCount} of ${state.bills.length} paid</div></div>
-    <div class="card stat"><div class="label">Still unpaid</div><div class="num ${t.unpaid>0?'neg':'pos'}">${fmt(t.unpaid)}</div><div class="sub">left to check off</div></div>
-    <div class="card stat"><div class="label">Household leftover</div><div class="num ${t.leftover>=0?'pos':'neg'}">${fmt(t.leftover)}</div><div class="sub">household income - all bills</div></div>`;
-  /* paycheck split (Emily) */
-  const em=state.incomes.filter(i=>i.person==='Emily');
-  const emTotal=em.reduce((s,i)=>s+(+i.amount||0),0);
-  const emHold=em.reduce((s,i)=>s+(+i.holdback||0),0);
-  const emHouse=Math.max(emTotal-emHold,0);
-  const hp=emTotal?Math.round(emHold/emTotal*100):0;
-  $('splitBar').innerHTML=`<div class="seg-hold" style="width:${hp}%">${fmt(emHold)}</div><div class="seg-house" style="width:${100-hp}%">${fmt(emHouse)}</div>`;
-  $('legHold').textContent=fmt(emHold)+' (hard limit)';
-  $('legHouse').textContent=fmt(emHouse);
-  /* debt snapshot */
-  const totalDebt=state.debts.reduce((s,d)=>s+Math.max(d.balance,0),0);
-  const totalStart=state.debts.reduce((s,d)=>s+d.startBalance,0);
-  const pct=totalStart?Math.min(100,Math.max(0,(1-totalDebt/totalStart)*100)):0;
-  $('dashDebt').innerHTML=`
-    <div class="debt-bal">${fmt(totalDebt)}</div>
-    <div class="sub" style="font-size:12px;color:var(--muted)">total across ${state.debts.length} accounts - ${pct.toFixed(1)}% paid down since start</div>
-    <div class="progress"><div style="width:${pct}%"></div></div>
-    <button class="btn btn-ghost btn-sm" onclick="showView('debt')">Open debt tracker -></button>`;
-  /* goals preview */
-  $('dashGoals').innerHTML=state.goals.length?state.goals.map(goalCardHTML).join(''):
-    '<div class="card empty">No goals yet - add one on the Goals tab. Even a small one counts.</div>';
-}
-
-/* ================= RENDER: BILLS (Emily / Hameed tabs) ================= */
-function billRowHTML(b,showPerson){
-  return`
-    <tr class="${b.paid?'paid-row':''}">
-      <td><input type="checkbox" class="chk" ${b.paid?'checked':''} onchange="togglePaid('${b.id}',this.checked)" aria-label="Mark ${esc(b.name)} paid"></td>
-      <td><span class="bill-name" style="font-weight:700">${esc(b.name)}</span>${b.debtId?' <span class="tag cat">-> debt</span>':''}</td>
-      <td class="money">${fmt(+b.amount||0)}</td>
-      ${showPerson?`<td>${personTag(b.person)}</td>`:''}
-      <td><span class="tag cat">${esc(b.category||'-')}</span></td>
-      <td>${b.due?('Day '+b.due):'-'}</td>
-      <td style="white-space:nowrap">
-        <button class="icon-btn" title="Edit" onclick="openBillModal('${b.id}')">Edit</button>
-        <button class="icon-btn" title="Delete" onclick="deleteBill('${b.id}')">Delete</button>
-      </td>
-    </tr>`;
-}
-function sumBills(list){return list.reduce((s,b)=>s+(+b.amount||0),0)}
-function renderBills(){
-  /* Emily's tab: her personal bills */
-  const eBills=state.bills.filter(b=>b.person==='Emily');
-  $('billRowsEmily').innerHTML=eBills.map(b=>billRowHTML(b,false)).join('')||'<tr><td colspan="6" class="empty">No bills yet - add one above.</td></tr>';
-  const eTotal=sumBills(eBills),ePaid=sumBills(eBills.filter(b=>b.paid));
-  const eHold=state.incomes.filter(i=>i.person==='Emily').reduce((s,i)=>s+(+i.holdback||0),0);
-  const eLeft=eHold-eTotal;
-  $('emilyTotals').innerHTML=`
-    <div class="card stat"><div class="label">Emily's bills total</div><div class="num">${fmt(eTotal)}</div></div>
-    <div class="card stat"><div class="label">Paid so far</div><div class="num pos">${fmt(ePaid)}</div></div>
-    <div class="card stat"><div class="label">Still to pay</div><div class="num ${eTotal-ePaid>0?'neg':'pos'}">${fmt(eTotal-ePaid)}</div></div>
-    <div class="card stat"><div class="label">Holdback left after bills</div><div class="num ${eLeft>=0?'pos':'neg'}">${fmt(eLeft)}</div><div class="sub">${fmt(eHold)} holdback - bills</div></div>`;
-  /* Hameed's tab: his bills + shared household bills */
-  const hBills=state.bills.filter(b=>b.person!=='Emily');
-  $('billRowsHameed').innerHTML=hBills.map(b=>billRowHTML(b,true)).join('')||'<tr><td colspan="7" class="empty">No bills yet - add one above.</td></tr>';
-  const hTotal=sumBills(hBills),hPaid=sumBills(hBills.filter(b=>b.paid));
-  const t=computeTotals();
-  $('hameedTotals').innerHTML=`
-    <div class="card stat"><div class="label">Household bills total</div><div class="num">${fmt(hTotal)}</div></div>
-    <div class="card stat"><div class="label">Paid so far</div><div class="num pos">${fmt(hPaid)}</div></div>
-    <div class="card stat"><div class="label">Still to pay</div><div class="num ${hTotal-hPaid>0?'neg':'pos'}">${fmt(hTotal-hPaid)}</div></div>
-    <div class="card stat"><div class="label">Household money left</div><div class="num ${t.household-hTotal>=0?'pos':'neg'}">${fmt(t.household-hTotal)}</div><div class="sub">${fmt(t.household)} household income - bills</div></div>`;
-  renderIncome();
-}
-function renderIncome(){
-  $('incomeRows').innerHTML=state.incomes.map(i=>`
-    <tr>
-      <td style="font-weight:700">${esc(i.source)}</td>
-      <td>${personTag(i.person)}</td>
-      <td class="money">${fmt(+i.amount||0)}</td>
-      <td class="money">${fmt(+i.holdback||0)}</td>
-      <td class="money">${fmt((+i.amount||0)-(+i.holdback||0))}</td>
-      <td style="white-space:nowrap">
-        <button class="icon-btn" title="Edit" onclick="openIncomeModal('${i.id}')">Edit</button>
-        <button class="icon-btn" title="Delete" onclick="deleteIncome('${i.id}')">Delete</button>
-      </td>
-    </tr>`).join('')||'<tr><td colspan="6" class="empty">No income sources yet.</td></tr>';
-  const t=computeTotals();
-  $('incomeTotals').innerHTML=`
-    <div class="card stat"><div class="label">Total income</div><div class="num">${fmt(t.income)}</div></div>
-    <div class="card stat"><div class="label">Emily's holdback</div><div class="num">${fmt(t.holdback)}</div><div class="sub">hard limit - stays with Emily</div></div>
-    <div class="card stat"><div class="label">To household</div><div class="num pos">${fmt(t.household)}</div></div>
-    <div class="card stat"><div class="label">Household leftover</div><div class="num ${t.leftover>=0?'pos':'neg'}">${fmt(t.leftover)}</div><div class="sub">after all bills</div></div>`;
-}
-async function togglePaid(id,checked){
-  const b=state.bills.find(x=>x.id===id);if(!b)return;
-  b.paid=checked;
-  /* if this bill is linked to a debt, paying it reduces the balance */
-  if(b.debtId){
-    const d=state.debts.find(x=>x.id===b.debtId);
-    if(d){
-      const amt=+b.amount||0;
-      if(checked){
-        d.balance=Math.max(0,+(d.balance-amt).toFixed(2));
-        d.totalPaid=+(d.totalPaid+amt).toFixed(2);
-        recordDebtEvent(d.id,'Bill payment',amt,d.balance,b.name);
-      }
-      else{
-        d.balance=+(d.balance+amt).toFixed(2);
-        d.totalPaid=Math.max(0,+(d.totalPaid-amt).toFixed(2));
-        recordDebtEvent(d.id,'Payment reversed',-amt,d.balance,b.name);
-      }
+function renderContacts() {
+  const qEl = document.getElementById('searchBox');
+  const q = qEl ? qEl.value.trim().toLowerCase() : '';
+  ['Em', 'Hameed', 'Vets'].forEach(owner => {
+    const el = document.getElementById('contacts-' + owner);
+    if (!el) return;
+    const useQ = owner === 'Vets' ? '' : q;
+    const items = data.contacts
+      .map((c, i) => ({ c, i }))
+      .filter(x => x.c.owner === owner && matchesSearch(x.c, useQ));
+    if (!items.length) {
+      const hints = {
+        Em: q ? 'No matches.' : 'No contacts yet - tap Edit, then + Add. Family, boss, unit desk line.',
+        Hameed: q ? 'No matches.' : 'No contacts yet - tap Edit, then + Add.',
+        Vets: 'Add the regular clinic and an emergency/after-hours vet.'
+      };
+      el.innerHTML = '<div class="empty">' + hints[owner] + '</div>';
+      return;
     }
+    el.innerHTML = items.map(({ c, i }) =>
+      '<div class="card">' +
+      '<div class="c-top">' +
+      '<div class="avatar">' + esc(initials(c.name)) + '</div>' +
+      '<div class="c-info"><div class="c-name">' + esc(c.name) + '</div><div class="c-rel">' + esc(c.rel) + '</div></div>' +
+      '<div class="row-edit">' +
+      '<button class="icon-btn" onclick="openContactForm(\'' + jsq(c.owner) + '\',' + i + ')">&#9998;</button>' +
+      '<button class="icon-btn del" onclick="delContact(' + i + ')">&#10005;</button>' +
+      '</div></div>' +
+      '<div class="c-actions">' + numRow(c.phone, c.phoneLabel) + '</div>' +
+      (c.notes ? '<div class="c-notes">' + esc(c.notes) + '</div>' : '') +
+      '</div>'
+    ).join('');
+  });
+}
+function openContactForm(owner, index = -1) {
+  contactOwner = owner; contactIndex = index;
+  const c = index >= 0 ? data.contacts[index] : { name: '', rel: '', phone: '', phoneLabel: '', notes: '' };
+  const who = owner === 'Vets' ? 'Vet' : owner;
+  document.getElementById('formTitle').textContent = (index >= 0 ? 'Edit' : 'Add') + ' contact - ' + who;
+  document.getElementById('f-name').value = c.name;
+  document.getElementById('f-rel').value = c.rel;
+  document.getElementById('f-phone').value = c.phone;
+  document.getElementById('f-phone-label').value = c.phoneLabel || '';
+  document.getElementById('f-notes').value = c.notes || '';
+  openModal('formModal');
+}
+function saveContact() {
+  const entry = {
+    owner: contactOwner,
+    name: document.getElementById('f-name').value.trim(),
+    rel: document.getElementById('f-rel').value.trim(),
+    phone: document.getElementById('f-phone').value.trim(),
+    phoneLabel: document.getElementById('f-phone-label').value.trim(),
+    notes: document.getElementById('f-notes').value.trim()
+  };
+  if (!entry.name || !entry.phone) { alert('Name and phone number are required.'); return; }
+  if (contactIndex >= 0) { entry.owner = data.contacts[contactIndex].owner; data.contacts[contactIndex] = entry; }
+  else data.contacts.push(entry);
+  persist('contacts');
+  renderContacts();
+  closeModal('formModal');
+}
+function delContact(i) {
+  if (!confirm('Remove ' + data.contacts[i].name + '?')) return;
+  data.contacts.splice(i, 1);
+  persist('contacts');
+  renderContacts();
+}
+
+// ---------- doctors ----------
+function renderDoctors() {
+  PEOPLE.forEach(owner => {
+    const el = document.getElementById('doctors-' + owner);
+    if (!el) return;
+    const items = data.doctors.map((d, i) => ({ d, i })).filter(x => x.d.owner === owner);
+    if (!items.length) {
+      el.innerHTML = '<div class="empty">No doctors listed - tap Edit, then + Add doctor.</div>';
+      return;
+    }
+    el.innerHTML = items.map(({ d, i }) =>
+      '<div class="card">' +
+      '<div class="c-top">' +
+      '<div class="avatar doc">' + esc(initials(d.name)) + '</div>' +
+      '<div class="c-info"><div class="c-name">' + esc(d.name) + '</div><div class="c-rel">' + esc(d.spec) + (d.office ? ' &middot; ' + esc(d.office) : '') + '</div></div>' +
+      '<div class="row-edit">' +
+      '<button class="icon-btn" onclick="openDoctorForm(\'' + owner + '\',' + i + ')">&#9998;</button>' +
+      '<button class="icon-btn del" onclick="delDoctor(' + i + ')">&#10005;</button>' +
+      '</div></div>' +
+      '<div class="c-actions">' + numRow(d.phone, 'Office') + '</div>' +
+      (d.notes ? '<div class="c-notes">' + esc(d.notes) + '</div>' : '') +
+      '</div>'
+    ).join('');
+  });
+}
+function openDoctorForm(owner, index = -1) {
+  doctorOwner = owner; doctorIndex = index;
+  const d = index >= 0 ? data.doctors[index] : { name: '', spec: '', phone: '', office: '', notes: '' };
+  document.getElementById('doctorTitle').textContent = (index >= 0 ? 'Edit' : 'Add') + ' doctor - ' + owner;
+  document.getElementById('dr-name').value = d.name;
+  document.getElementById('dr-spec').value = d.spec;
+  document.getElementById('dr-phone').value = d.phone;
+  document.getElementById('dr-office').value = d.office || '';
+  document.getElementById('dr-notes').value = d.notes || '';
+  openModal('doctorModal');
+}
+function saveDoctor() {
+  const d = {
+    owner: doctorOwner,
+    name: document.getElementById('dr-name').value.trim(),
+    spec: document.getElementById('dr-spec').value.trim(),
+    phone: document.getElementById('dr-phone').value.trim(),
+    office: document.getElementById('dr-office').value.trim(),
+    notes: document.getElementById('dr-notes').value.trim()
+  };
+  if (!d.name || !d.phone) { alert('Name and phone number are required.'); return; }
+  if (doctorIndex >= 0) { d.owner = data.doctors[doctorIndex].owner; data.doctors[doctorIndex] = d; }
+  else data.doctors.push(d);
+  persist('doctors');
+  renderDoctors();
+  closeModal('doctorModal');
+}
+function delDoctor(i) {
+  if (!confirm('Remove ' + data.doctors[i].name + '?')) return;
+  data.doctors.splice(i, 1);
+  persist('doctors');
+  renderDoctors();
+}
+
+// ---------- medical profiles + meds ----------
+function medRows(ownerKey, ownerLabel) {
+  const personMeds = data.meds.map((m, mi) => ({ ...m, _i: mi })).filter(m => m.owner === ownerKey);
+  const rows = personMeds.length
+    ? personMeds.map(m =>
+        '<div class="med-line"><span>' + esc(m.name) +
+        (m.notes ? '<span class="mnote">' + esc(m.notes) + '</span>' : '') +
+        '<span class="med-inline-edit">' +
+        '<button class="icon-btn mini" onclick="openMedForm(\'' + jsq(ownerKey) + '\',\'' + jsq(ownerLabel) + '\',' + m._i + ')">&#9998;</button>' +
+        '<button class="icon-btn del mini" onclick="delMed(' + m._i + ')">&#10005;</button></span>' +
+        '</span><span class="dose">' + esc(m.dose) + '</span></div>'
+      ).join('')
+    : '<div class="empty" style="padding:2px 0">None listed.</div>';
+  return '<div class="med-rows"><div class="k-row">Medications</div>' + rows + '</div>' +
+    '<button class="add-inline" onclick="openMedForm(\'' + jsq(ownerKey) + '\',\'' + jsq(ownerLabel) + '\')">+ Add medication for ' + esc(ownerLabel) + '</button>';
+}
+function renderMedical() {
+  PEOPLE.forEach(owner => {
+    const el = document.getElementById('medical-' + owner);
+    if (!el) return;
+    const p = data.profiles[owner];
+    if (!p) {
+      el.innerHTML = '<button class="setup-profile" onclick="openProfileForm(\'' + owner + '\')">+ Set up ' + owner + '\u2019s profile</button>';
+      return;
+    }
+    el.innerHTML = '<div class="card person-card ' + owner.toLowerCase() + '">' +
+      '<div class="p-head"><div class="p-name">' + esc(owner) + '</div>' +
+      '<div class="row-edit"><button class="icon-btn" onclick="openProfileForm(\'' + owner + '\')">&#9998;</button></div></div>' +
+      '<div class="p-grid">' +
+      (p.dob ? '<div class="p-item"><div class="k">DOB</div><div class="v">' + esc(p.dob) + '</div></div>' : '') +
+      (p.blood ? '<div class="p-item"><div class="k">Blood type</div><div class="v">' + esc(p.blood) + '</div></div>' : '') +
+      '<div class="p-item warn wide"><div class="k">Allergies</div><div class="v">' + esc(p.allergies || 'Not listed') + '</div></div>' +
+      (p.conditions ? '<div class="p-item wide"><div class="k">Conditions</div><div class="v">' + esc(p.conditions) + '</div></div>' : '') +
+      (p.notes ? '<div class="p-item wide"><div class="k">Notes</div><div class="v">' + esc(p.notes) + '</div></div>' : '') +
+      '</div>' +
+      medRows(owner, owner) +
+      '</div>';
+  });
+}
+function openProfileForm(owner) {
+  profileOwner = owner;
+  const p = data.profiles[owner] || { dob: '', blood: '', allergies: '', conditions: '', notes: '' };
+  document.getElementById('profileTitle').textContent = owner + '\u2019s profile';
+  document.getElementById('p-dob').value = p.dob || '';
+  document.getElementById('p-blood').value = p.blood || '';
+  document.getElementById('p-allergies').value = p.allergies || '';
+  document.getElementById('p-conditions').value = p.conditions || '';
+  document.getElementById('p-notes').value = p.notes || '';
+  openModal('profileModal');
+}
+function saveProfile() {
+  data.profiles[profileOwner] = {
+    dob: document.getElementById('p-dob').value.trim(),
+    blood: document.getElementById('p-blood').value.trim(),
+    allergies: document.getElementById('p-allergies').value.trim(),
+    conditions: document.getElementById('p-conditions').value.trim(),
+    notes: document.getElementById('p-notes').value.trim()
+  };
+  persist('profiles');
+  renderMedical();
+  closeModal('profileModal');
+}
+function openMedForm(ownerKey, ownerLabel, index = -1) {
+  medOwner = ownerKey; medIndex = index;
+  const m = index >= 0 ? data.meds[index] : { name: '', dose: '', notes: '' };
+  document.getElementById('medTitle').textContent = (index >= 0 ? 'Edit' : 'Add') + ' medication - ' + ownerLabel;
+  document.getElementById('m-name').value = m.name;
+  document.getElementById('m-dose').value = m.dose;
+  document.getElementById('m-notes').value = m.notes || '';
+  openModal('medModal');
+}
+function saveMed() {
+  const m = {
+    owner: medOwner,
+    name: document.getElementById('m-name').value.trim(),
+    dose: document.getElementById('m-dose').value.trim(),
+    notes: document.getElementById('m-notes').value.trim()
+  };
+  if (!m.name) { alert('Medication name is required.'); return; }
+  if (medIndex >= 0) { m.owner = data.meds[medIndex].owner; data.meds[medIndex] = m; }
+  else data.meds.push(m);
+  persist('meds');
+  renderMedical();
+  renderPets();
+  closeModal('medModal');
+}
+function delMed(i) {
+  if (!confirm('Remove ' + data.meds[i].name + '?')) return;
+  data.meds.splice(i, 1);
+  persist('meds');
+  renderMedical();
+  renderPets();
+}
+
+// ---------- pets ----------
+function petById(id) { return data.pets.find(p => p.id === id); }
+function renderPets() {
+  const el = document.getElementById('pets-list');
+  if (!el) return;
+  if (!data.pets.length) {
+    el.innerHTML = '<div class="empty">No pets yet - tap Edit, then + Add pet.</div>';
+    return;
   }
-  markDirty();renderAll();
-  if(checked)toast(b.name+' marked paid done');
+  el.innerHTML = data.pets.map((p, i) => {
+    const petDocTiles = data.petdocs
+      .map((d, di) => ({ d, di }))
+      .filter(x => x.d.petId === p.id)
+      .map(({ d, di }) => docTile(d, di, 'petdocs'));
+    petDocTiles.push('<button class="upload-tile" onclick="pickFile(\'petdocs\',\'' + jsq(p.id) + '\')"><span class="plus">+</span>Add vaccine or record</button>');
+    return '<div class="card person-card pet">' +
+      '<div class="p-head"><div><div class="pet-name">' + esc(p.name) + '</div><div class="p-sub">' + esc(p.breed) + '</div></div>' +
+      '<div class="row-edit">' +
+      '<button class="icon-btn" onclick="openPetForm(' + i + ')">&#9998;</button>' +
+      '<button class="icon-btn del" onclick="delPet(' + i + ')">&#10005;</button>' +
+      '</div></div>' +
+      '<div class="p-grid">' +
+      (p.dob ? '<div class="p-item"><div class="k">DOB</div><div class="v">' + esc(p.dob) + '</div></div>' : '') +
+      (p.chip ? '<div class="p-item"><div class="k">Microchip</div><div class="v">' + esc(p.chip) + '</div></div>' : '') +
+      '<div class="p-item warn wide"><div class="k">Allergies</div><div class="v">' + esc(p.allergies || 'Not listed') + '</div></div>' +
+      (p.conditions ? '<div class="p-item wide"><div class="k">Conditions</div><div class="v">' + esc(p.conditions) + '</div></div>' : '') +
+      (p.notes ? '<div class="p-item wide"><div class="k">Notes</div><div class="v">' + esc(p.notes) + '</div></div>' : '') +
+      '</div>' +
+      medRows(p.id, p.name) +
+      '<div class="med-rows"><div class="k-row">Vaccines &amp; Records</div>' +
+      '<div class="docs-grid in-card">' + petDocTiles.join('') + '</div></div>' +
+      '<button class="share-pet" onclick="sharePetSummary(\'' + jsq(p.id) + '\')">' + SHARE_SVG + 'Share ' + esc(p.name) + '\u2019s info</button>' +
+      '</div>';
+  }).join('');
 }
-async function deleteBill(id){
-  const b=state.bills.find(x=>x.id===id);
-  if(!confirm('Delete "'+b.name+'"? It will no longer appear in future months.'))return;
-  state.bills=state.bills.filter(x=>x.id!==id);markDirty();renderAll();
+function openPetForm(index = -1) {
+  petIndex = index;
+  const p = index >= 0 ? data.pets[index] : { name: '', breed: '', dob: '', chip: '', allergies: '', conditions: '', notes: '' };
+  document.getElementById('petTitle').textContent = index >= 0 ? 'Edit ' + p.name : 'Add pet';
+  document.getElementById('pet-name').value = p.name;
+  document.getElementById('pet-breed').value = p.breed;
+  document.getElementById('pet-dob').value = p.dob || '';
+  document.getElementById('pet-chip').value = p.chip || '';
+  document.getElementById('pet-allergies').value = p.allergies || '';
+  document.getElementById('pet-conditions').value = p.conditions || '';
+  document.getElementById('pet-notes').value = p.notes || '';
+  openModal('petModal');
 }
-async function deleteIncome(id){
-  const i=state.incomes.find(x=>x.id===id);
-  if(!confirm('Delete income "'+i.source+'"?'))return;
-  state.incomes=state.incomes.filter(x=>x.id!==id);markDirty();renderAll();
+function savePet() {
+  const p = {
+    name: document.getElementById('pet-name').value.trim(),
+    breed: document.getElementById('pet-breed').value.trim(),
+    dob: document.getElementById('pet-dob').value.trim(),
+    chip: document.getElementById('pet-chip').value.trim(),
+    allergies: document.getElementById('pet-allergies').value.trim(),
+    conditions: document.getElementById('pet-conditions').value.trim(),
+    notes: document.getElementById('pet-notes').value.trim()
+  };
+  if (!p.name) { alert('Name is required.'); return; }
+  if (petIndex >= 0) { p.id = data.pets[petIndex].id; data.pets[petIndex] = p; }
+  else { p.id = 'pet_' + Date.now(); data.pets.push(p); }
+  persist('pets');
+  renderPets();
+  closeModal('petModal');
 }
-
-/* ================= RENDER: DEBT ================= */
-function renderDebt(){
-  const total=state.debts.reduce((s,d)=>s+Math.max(d.balance,0),0);
-  const monthlyInt=state.debts.reduce((s,d)=>s+(d.status==='Active'?d.balance*(d.apr/100/12):0),0);
-  const paid=state.debts.reduce((s,d)=>s+d.totalPaid,0);
-  const minSum=state.debts.filter(d=>d.status==='Active').reduce((s,d)=>s+(+d.minPayment||0),0);
-  $('debtStats').innerHTML=`
-    <div class="card stat"><div class="label">Total balance</div><div class="num">${fmt(total)}</div></div>
-    <div class="card stat"><div class="label">Interest est. / month</div><div class="num neg">${fmt(monthlyInt)}</div><div class="sub">accrues automatically at month end</div></div>
-    <div class="card stat"><div class="label">Total paid so far</div><div class="num pos">${fmt(paid)}</div></div>
-    <div class="card stat"><div class="label">Active minimums / mo</div><div class="num">${fmt(minSum)}</div></div>`;
-  $('debtCards').innerHTML=state.debts.map(d=>{
-    const pct=d.startBalance?Math.min(100,Math.max(0,(1-d.balance/d.startBalance)*100)):0;
-    const est=payoffEstimate(d);
-    const mInt=d.balance*(d.apr/100/12);
-    const paidThisMonth=debtPaidThisMonth(d);
-    const history=debtHistory(d.id).slice(0,5);
-    return`
-    <div class="card debt-card ${d.status==='Paused'?'paused':''}">
-      <div class="debt-top">
-        <div><h3>${esc(d.name)}</h3><div class="debt-meta">${esc(d.type||'')}${d.due?' - due day '+d.due:''}</div></div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
-          <span class="status-pill ${d.status==='Active'?'active':'paused'}">${d.status}</span>
-          ${d.minPayment?`<span class="status-pill ${paidThisMonth?'paid':'due'}">${paidThisMonth?'Paid this month':'Due this month'}</span>`:''}
-        </div>
-      </div>
-      <div class="debt-bal">${fmt(d.balance)}</div>
-      <div class="progress"><div style="width:${pct}%"></div></div>
-      <div class="debt-row"><span>APR</span><span class="v">${d.apr?d.apr+'%':'-'}</span></div>
-      <div class="debt-row"><span>Monthly interest est.</span><span class="v">${d.apr?fmt(mInt):'-'}</span></div>
-      <div class="debt-row"><span>Monthly payment</span><span class="v">${d.minPayment?fmt(d.minPayment):'-'}</span></div>
-      <div class="debt-row"><span>Paid so far</span><span class="v">${fmt(d.totalPaid)}</span></div>
-      <div class="debt-row"><span>Payoff estimate</span><span class="v">${d.status==='Active'?est.label:'Paused'}</span></div>
-      <div class="history-list">
-        <div class="debt-meta" style="font-weight:800;margin-bottom:4px">Recent payment history</div>
-        ${history.length?history.map(h=>`<div class="history-item"><span>${new Date(h.ts).toLocaleDateString()} - ${esc(h.type)}${h.note?' ('+esc(h.note)+')':''}</span><span class="v">${fmt(h.amount)} / ${fmt(h.balanceAfter)}</span></div>`).join(''):'<div class="debt-meta">No payments logged yet.</div>'}
-      </div>
-      <div class="debt-actions">
-        <button class="btn btn-primary btn-sm" onclick="openPaymentModal('${d.id}')">Log payment</button>
-        ${d.minPayment&&!paidThisMonth?`<button class="btn btn-ghost btn-sm" onclick="markDebtMonthlyPaid('${d.id}')">Mark monthly paid</button>`:''}
-        <button class="btn btn-ghost btn-sm" onclick="openDebtHistoryModal('${d.id}')">View history</button>
-        <button class="btn btn-ghost btn-sm" onclick="toggleDebtStatus('${d.id}')">${d.status==='Active'?'Pause':'Resume'}</button>
-        <button class="btn btn-ghost btn-sm" onclick="openDebtModal('${d.id}')">Edit</button>
-        <button class="btn-danger" onclick="deleteDebt('${d.id}')">Delete</button>
-      </div>
-    </div>`;
-  }).join('')||'<div class="card empty">No debts tracked. Honestly, enjoy that.</div>';
-}
-async function toggleDebtStatus(id){
-  const d=state.debts.find(x=>x.id===id);
-  if(!d){toast('Debt not found');return}
-  d.status=d.status==='Active'?'Paused':'Active';
-  markDirty();renderAll();
-  toast(d.name+' '+(d.status==='Active'?'resumed':'paused')+' - interest '+(d.status==='Active'?'will':'will not')+' accrue');
-}
-async function deleteDebt(id){
-  const d=state.debts.find(x=>x.id===id);
-  if(!d){toast('Debt not found');return}
-  if(!confirm('Delete "'+d.name+'"? This cannot be undone.'))return;
-  state.debts=state.debts.filter(x=>x.id!==id);
-  state.bills.forEach(b=>{if(b.debtId===id)b.debtId=null});
-  state.paymentHistory=(state.paymentHistory||[]).filter(h=>h.debtId!==id);
-  markDirty();renderAll();
-  toast('Debt deleted - saving');
-}
-function markDebtMonthlyPaid(id){
-  const d=state.debts.find(x=>x.id===id);
-  if(!d){toast('Debt not found');return}
-  const linkedBill=state.bills.find(b=>b.debtId===id&&!b.paid);
-  if(linkedBill){togglePaid(linkedBill.id,true);return}
-  const amt=+d.minPayment||0;
-  if(amt<=0){openPaymentModal(id);return}
-  d.balance=Math.max(0,+(d.balance-amt).toFixed(2));
-  d.totalPaid=+(d.totalPaid+amt).toFixed(2);
-  recordDebtEvent(d.id,'Monthly payment',amt,d.balance,'Marked paid from debt card');
-  markDirty();renderAll();
-  toast(d.name+' monthly payment marked paid - saving');
-}
-function openDebtHistoryModal(id){
-  const d=state.debts.find(x=>x.id===id);
-  if(!d){toast('Debt not found');return}
-  const rows=debtHistory(id);
-  openModal(`
-    <h3>Payment history - ${esc(d.name)}</h3>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Date</th><th>Type</th><th>Amount</th><th>Balance after</th><th>Note</th></tr></thead>
-      <tbody>${rows.length?rows.map(h=>`<tr><td>${new Date(h.ts).toLocaleDateString()}</td><td>${esc(h.type)}</td><td class="money">${fmt(h.amount)}</td><td class="money">${fmt(h.balanceAfter)}</td><td>${esc(h.note||'')}</td></tr>`).join(''):'<tr><td colspan="5" class="empty">No payment history yet.</td></tr>'}</tbody>
-    </table></div>
-    <div class="modal-actions"><button class="btn btn-primary" onclick="closeModal()">Done</button></div>`);
+function delPet(i) {
+  const p = data.pets[i];
+  if (!confirm('Remove ' + p.name + ', including meds and records?')) return;
+  data.meds = data.meds.filter(m => m.owner !== p.id);
+  persist('meds');
+  // remove this pet's files
+  const toRemove = data.petdocs.filter(d => d.petId === p.id);
+  data.petdocs = data.petdocs.filter(d => d.petId !== p.id);
+  cacheLocal('petdocs');
+  if (fb) toRemove.forEach(f => fb.deleteDoc(fb.fileRef(f.id)).catch(err => { console.error(err); setSync('error'); }));
+  data.pets.splice(i, 1);
+  persist('pets');
+  renderPets();
 }
 
-/* ================= RENDER: GOALS ================= */
-function goalCardHTML(g){
-  const pct=g.target?Math.min(100,g.saved/g.target*100):0;
-  const done=g.saved>=g.target&&g.target>0;
-  return`
-  <div class="card">
-    <div class="goal-head"><h3>${done?'Done ':''}${esc(g.name)}</h3>${g.deadline?`<span class="tag cat">by ${esc(g.deadline)}</span>`:''}</div>
-    <div class="progress goal"><div style="width:${pct}%"></div></div>
-    <div class="goal-nums">${fmt(g.saved)} of ${fmt(g.target)} - ${pct.toFixed(0)}%${done?' - goal reached!':''}</div>
-    <div class="debt-actions">
-      <button class="btn btn-primary btn-sm" onclick="openContribModal('${g.id}')">+ Add money</button>
-      <button class="btn btn-ghost btn-sm" onclick="openGoalModal('${g.id}')">Edit</button>
-      <button class="btn-danger" onclick="deleteGoal('${g.id}')">Delete</button>
-    </div>
-  </div>`;
+// ---------- documents ----------
+function docTile(d, i, collection) {
+  const face = d.type === 'pdf'
+    ? '<div class="pdf-face">PDF</div>'
+    : '<img src="' + d.data + '" alt="' + esc(d.name) + '">';
+  return '<div class="doc-tile">' + face +
+    '<div class="doc-label">' + esc(d.name) + '</div>' +
+    (d.tag ? '<div class="doc-tag">' + esc(d.tag) + '</div>' : '') +
+    '<div class="doc-foot">' +
+    '<button class="view" onclick="openDoc(\'' + collection + '\',' + i + ')">View</button>' +
+    '<button onclick="shareDoc(\'' + collection + '\',' + i + ')">Share</button>' +
+    '</div>' +
+    '<div class="doc-manage">' +
+    '<button onclick="openDocMeta(\'' + collection + '\',' + i + ')">Rename</button>' +
+    '<button class="d" onclick="delDoc(\'' + collection + '\',' + i + ')">Delete</button>' +
+    '</div></div>';
 }
-function renderGoals(){
-  $('goalCards').innerHTML=state.goals.length?state.goals.map(goalCardHTML).join(''):
-    '<div class="card empty">Nothing here yet. Try one small goal - a $500 buffer, a trip fund, paying one card to zero.</div>';
+function renderDocs() {
+  PEOPLE.forEach(owner => {
+    const grid = document.getElementById('docs-' + owner);
+    if (!grid) return;
+    const tiles = data.docs
+      .map((d, i) => ({ d, i }))
+      .filter(x => x.d.owner === owner)
+      .map(({ d, i }) => docTile(d, i, 'docs'));
+    tiles.push('<button class="upload-tile" onclick="pickFile(\'docs\',\'' + owner + '\')"><span class="plus">+</span>Add photo or PDF</button>');
+    grid.innerHTML = tiles.join('');
+  });
 }
-async function deleteGoal(id){
-  const g=state.goals.find(x=>x.id===id);
-  if(!confirm('Delete goal "'+g.name+'"?'))return;
-  state.goals=state.goals.filter(x=>x.id!==id);markDirty();renderAll();
+function pickFile(collection, target) {
+  docCollection = collection;
+  uploadTarget = target;
+  document.getElementById('fileInput').click();
+}
+function readAsDataURL(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result);
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
+function compressImage(file) {
+  return new Promise((resolve, reject) => {
+    readAsDataURL(file).then(src => {
+      const img = new Image();
+      img.onload = () => {
+        const maxDim = 1400;
+        let w = img.width, h = img.height;
+        const scale = Math.min(1, maxDim / Math.max(w, h));
+        w = Math.round(w * scale); h = Math.round(h * scale);
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(c.toDataURL('image/jpeg', 0.82));
+      };
+      img.onerror = reject;
+      img.src = src;
+    }).catch(reject);
+  });
+}
+async function handleFile(ev) {
+  const file = ev.target.files[0];
+  ev.target.value = '';
+  if (!file) return;
+  let dataUrl, type;
+  if (file.type === 'application/pdf') {
+    const limit = fb ? 650 * 1024 : 3 * 1024 * 1024;
+    if (file.size > limit) {
+      alert(fb
+        ? 'That PDF is too large to sync (limit ~650 KB). A photo or screenshot of it will work - images get compressed automatically.'
+        : 'That PDF is over 3 MB. A photo or screenshot of it will save more reliably.');
+      return;
+    }
+    dataUrl = await readAsDataURL(file);
+    type = 'pdf';
+  } else {
+    try { dataUrl = await compressImage(file); } catch (e) { alert('Could not read that image.'); return; }
+    type = 'image';
+  }
+  if (fb && dataUrl.length > 950000) {
+    alert('That file is too large to sync. Try a smaller photo or a screenshot.');
+    return;
+  }
+  const entry = {
+    id: 'f_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+    kind: docCollection === 'docs' ? 'doc' : 'petdoc',
+    name: file.name,
+    tag: '',
+    type,
+    data: dataUrl,
+    createdAt: Date.now()
+  };
+  if (entry.kind === 'doc') entry.owner = uploadTarget;
+  else entry.petId = uploadTarget;
+  // optimistic local add; the snapshot will confirm
+  (entry.kind === 'petdoc' ? data.petdocs : data.docs).push(entry);
+  cacheLocal(entry.kind === 'petdoc' ? 'petdocs' : 'docs');
+  if (fb) fb.setDoc(fb.fileRef(entry.id), entry).catch(err => { console.error(err); setSync('error'); toast('Upload failed to sync'); });
+  renderDocs(); renderPets();
+}
+function getDoc(collection, i) { return collection === 'docs' ? data.docs[i] : data.petdocs[i]; }
+
+// ---------- in-app viewer ----------
+let currentDoc = null;
+function openDoc(collection, i) {
+  currentDoc = { collection, i };
+  const d = getDoc(collection, i);
+  const body = document.getElementById('viewerBody');
+  if (d.type === 'pdf') {
+    body.innerHTML = '<iframe src="' + d.data + '"></iframe>';
+  } else {
+    body.innerHTML = '<div style="text-align:center;max-height:100%;">' +
+      '<img src="' + d.data + '" alt="' + esc(d.name) + '">' +
+      '<div style="color:rgba(255,255,255,0.55);font-size:0.75rem;font-weight:700;margin-top:10px;">Tip: press and hold the image to share or save it</div>' +
+      '</div>';
+  }
+  document.getElementById('viewer').classList.add('open');
+}
+function closeViewer() {
+  document.getElementById('viewer').classList.remove('open');
+  document.getElementById('viewerBody').innerHTML = '';
+  currentDoc = null;
+}
+function shareCurrentDoc() { if (currentDoc) shareDoc(currentDoc.collection, currentDoc.i); }
+function downloadCurrentDoc() { if (currentDoc) downloadDoc(currentDoc.collection, currentDoc.i); }
+
+function dataURLtoBlob(dataurl) {
+  const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1], bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8 = new Uint8Array(n);
+  while (n--) u8[n] = bstr.charCodeAt(n);
+  return new Blob([u8], { type: mime });
+}
+function docFileName(d, blob) {
+  const ext = d.type === 'pdf' ? '.pdf' : (blob.type.includes('png') ? '.png' : '.jpg');
+  return d.name.includes('.') ? d.name : d.name + ext;
+}
+function downloadDoc(collection, i) {
+  const d = getDoc(collection, i);
+  const blob = dataURLtoBlob(d.data);
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = docFileName(d, blob);
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+  toast('Saved - share it from your Photos or Files app');
+}
+async function shareDoc(collection, i) {
+  const d = getDoc(collection, i);
+  const blob = dataURLtoBlob(d.data);
+  const fname = docFileName(d, blob);
+  try {
+    const file = new File([blob], fname, { type: blob.type });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: d.name });
+      return;
+    }
+  } catch (e) {
+    if (e && e.name === 'AbortError') return;
+  }
+  try {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+    toast('Opened in a new tab - use the share button there');
+    return;
+  } catch (e) {}
+  downloadDoc(collection, i);
+}
+async function sharePetSummary(petId) {
+  const p = petById(petId);
+  if (!p) return;
+  const meds = data.meds.filter(m => m.owner === petId);
+  const docs = data.petdocs.filter(d => d.petId === petId);
+  const lines = [p.name + (p.breed ? ' - ' + p.breed : '')];
+  if (p.dob) lines.push('DOB: ' + p.dob);
+  if (p.chip) lines.push('Microchip: ' + p.chip);
+  lines.push('Allergies: ' + (p.allergies || 'None listed'));
+  if (p.conditions) lines.push('Conditions: ' + p.conditions);
+  if (meds.length) lines.push('Medications: ' + meds.map(m => m.name + (m.dose ? ' (' + m.dose + ')' : '')).join(', '));
+  if (docs.length) lines.push('Records on file: ' + docs.map(d => d.name).join(', '));
+  if (p.notes) lines.push('Notes: ' + p.notes);
+  const text = lines.join('\n');
+  if (navigator.share) {
+    try { await navigator.share({ title: p.name + ' - pet info', text }); return; }
+    catch (e) { if (e && e.name === 'AbortError') return; }
+  }
+  copyNum(text);
+  toast('Copied ' + p.name + '\u2019s info - paste into a text or email');
+}
+function openDocMeta(collection, i) {
+  docCollection = collection; docIndex = i;
+  const d = getDoc(collection, i);
+  document.getElementById('d-name').value = d.name;
+  document.getElementById('d-tag').value = d.tag || '';
+  openModal('docModal');
+}
+function saveDocMeta() {
+  const d = getDoc(docCollection, docIndex);
+  d.name = document.getElementById('d-name').value.trim() || d.name;
+  d.tag = document.getElementById('d-tag').value.trim();
+  cacheLocal(docCollection);
+  if (fb) fb.setDoc(fb.fileRef(d.id), { name: d.name, tag: d.tag }, { merge: true }).catch(err => { console.error(err); setSync('error'); });
+  renderDocs();
+  renderPets();
+  closeModal('docModal');
+}
+function delDoc(collection, i) {
+  const d = getDoc(collection, i);
+  if (!confirm('Remove ' + d.name + '?')) return;
+  if (collection === 'docs') data.docs.splice(i, 1);
+  else data.petdocs.splice(i, 1);
+  cacheLocal(collection);
+  if (fb) fb.deleteDoc(fb.fileRef(d.id)).catch(err => { console.error(err); setSync('error'); });
+  renderDocs();
+  renderPets();
 }
 
-/* ================= RECEIPTS ================= */
-const MAX_FILE=2*1024*1024;
-function renderReceipts(){
-  $('receiptsSub').textContent='Files attached to '+keyLabel(state.currentMonth)+'. When the month closes, they move to Past months automatically.';
-  const list=state.receipts[state.currentMonth]||[];
-  $('receiptList').innerHTML=list.length?list.map(r=>`
-    <div class="receipt-item">
-      <div style="min-width:0">
-        <div class="receipt-name">${r.type.startsWith('image')?'Image':'File'} ${esc(r.name)}</div>
-        <div class="receipt-meta">${(r.size/1024).toFixed(0)} KB - ${new Date(r.ts).toLocaleDateString()}</div>
-      </div>
-      <div style="white-space:nowrap">
-        <button class="btn btn-ghost btn-sm" onclick="viewReceipt('${state.currentMonth}','${r.id}')">View</button>
-        <button class="btn-danger" onclick="deleteReceipt('${r.id}')">Delete</button>
-      </div>
-    </div>`).join(''):'<div class="empty">No receipts for this month yet.</div>';
+// ---------- notes ----------
+function saveNotes(owner) {
+  data.notes[owner] = document.getElementById('notes-' + owner).value;
+  persist('notes');
 }
-function viewReceipt(mk,id){
-  const r=(state.receipts[mk]||[]).find(x=>x.id===id);if(!r)return;
-  const w=window.open('','_blank');
-  if(w){w.document.write(r.type.startsWith('image')
-    ?'<title>'+esc(r.name)+'</title><img src="'+r.data+'" style="max-width:100%">'
-    :'<title>'+esc(r.name)+'</title><embed src="'+r.data+'" type="application/pdf" style="width:100%;height:100vh">')}
-  else{const a=document.createElement('a');a.href=r.data;a.download=r.name;a.click()}
-}
-async function deleteReceipt(id){
-  if(!confirm('Delete this file?'))return;
-  state.receipts[state.currentMonth]=(state.receipts[state.currentMonth]||[]).filter(r=>r.id!==id);
-  markDirty();renderReceipts();
-}
-function handleFiles(files){
-  [...files].forEach(f=>{
-    if(f.size>MAX_FILE){toast(f.name+' is over 2 MB - try a smaller file or photo');return}
-    const rd=new FileReader();
-    rd.onload=async()=>{
-      if(!state.receipts[state.currentMonth])state.receipts[state.currentMonth]=[];
-      state.receipts[state.currentMonth].push({id:uid(),name:f.name,type:f.type,size:f.size,data:rd.result,ts:Date.now()});
-      markDirty();
-      renderReceipts();toast(f.name+' added to '+keyLabel(state.currentMonth)+' - saving');
-    };
-    rd.readAsDataURL(f);
+function renderNotes() {
+  PEOPLE.forEach(owner => {
+    const el = document.getElementById('notes-' + owner);
+    if (el && document.activeElement !== el) el.value = (data.notes && data.notes[owner]) || '';
   });
 }
 
-/* ================= ARCHIVE ================= */
-function renderArchive(){
-  const keys=Object.keys(state.archives).sort().reverse();
-  $('archiveList').innerHTML=keys.length?keys.map(k=>{
-    const a=state.archives[k];const rc=(state.receipts[k]||[]).length;
-    return`
-    <div class="card archive-month" id="arch-${k}">
-      <div class="archive-summary" onclick="document.getElementById('arch-${k}').classList.toggle('open')">
-        <h3>${keyLabel(k)}</h3>
-        <div class="archive-stats">
-          <span>Income ${fmt(a.totals.income)}</span>
-          <span>Bills ${fmt(a.totals.billTotal)}</span>
-          <span style="color:${a.totals.unpaid>0?'var(--red)':'var(--green)'}">Unpaid ${fmt(a.totals.unpaid)}</span>
-          <span>v</span>
-        </div>
-      </div>
-      <div class="archive-detail">
-        <div class="table-wrap"><table>
-          <thead><tr><th>Bill</th><th>Amount</th><th>Person</th><th>Status</th></tr></thead>
-          <tbody>${a.bills.map(b=>`<tr><td>${esc(b.name)}</td><td class="money">${fmt(+b.amount||0)}</td><td>${personTag(b.person)}</td><td>${b.paid?'<span class="tag" style="background:#F3E7CC;color:var(--green)">Paid</span>':'<span class="tag" style="background:#F4DDE3;color:var(--red)">Unpaid</span>'}</td></tr>`).join('')}</tbody>
-        </table></div>
-        ${rc?`<div class="section-title" style="margin-top:16px;font-size:15px">Receipts (${rc})</div>`+
-          (state.receipts[k]||[]).map(r=>`<div class="receipt-item"><div class="receipt-name">${r.type.startsWith('image')?'Image':'File'} ${esc(r.name)}</div><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();viewReceipt('${k}','${r.id}')">View</button></div>`).join(''):''}
-      </div>
-    </div>`;
-  }).join(''):'<div class="card empty">No closed months yet. When '+keyLabel(state.currentMonth)+' ends, it will show up here automatically.</div>';
+// ---------- render all + init ----------
+function renderAll() {
+  renderContacts();
+  renderDoctors();
+  renderMedical();
+  renderDocs();
+  renderPets();
+  renderNotes();
 }
 
-/* ================= MODALS ================= */
-function openModal(html){$('modalBox').innerHTML=html;$('modalBg').classList.add('open')}
-function closeModal(){$('modalBg').classList.remove('open')}
-$('modalBg')?.addEventListener('click',e=>{if(e.target.id==='modalBg')closeModal()});
-
-function openBillModal(id,defPerson){
-  const b=id?state.bills.find(x=>x.id===id):null;
-  const sel=p=>b?(b.person===p?'selected':''):(defPerson===p?'selected':'');
-  const debtOpts=state.debts.map(d=>`<option value="${d.id}" ${b&&b.debtId===d.id?'selected':''}>${esc(d.name)}</option>`).join('');
-  openModal(`
-    <h3>${b?'Edit bill':'Add a bill'}</h3>
-    <div class="field"><label>Name</label><input id="f_name" value="${b?esc(b.name):''}"></div>
-    <div class="field"><label>Amount ($)</label><input id="f_amount" type="number" step="0.01" min="0" value="${b?b.amount:''}"></div>
-    <div class="field"><label>Person</label><select id="f_person">
-      <option ${sel('Emily')}>Emily</option>
-      <option ${sel('Hameed')}>Hameed</option>
-      <option ${sel('Both')}>Both</option></select></div>
-    <div class="field"><label>Category</label><select id="f_cat">
-      ${['Housing','Groceries','Phone','Subscriptions','Transportation','Debt payment','Other'].map(c=>`<option ${b&&b.category===c?'selected':''}>${c}</option>`).join('')}</select></div>
-    <div class="field"><label>Due day of month (optional)</label><input id="f_due" type="number" min="1" max="31" value="${b&&b.due?b.due:''}"></div>
-    <div class="field"><label>Counts toward a debt? (optional)</label><select id="f_debt"><option value="">No</option>${debtOpts}</select></div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveBill('${id||''}')">Save</button>
-    </div>`);
+// ---------- PIN lock ----------
+let pinBuf = '';
+async function sha256Hex(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
-async function saveBill(id){
-  const name=$('f_name').value.trim();if(!name){toast('Give the bill a name');return}
-  const data={name,amount:+$('f_amount').value||0,person:$('f_person').value,category:$('f_cat').value,
-    due:+$('f_due').value||null,debtId:$('f_debt').value||null};
-  if(id){Object.assign(state.bills.find(x=>x.id===id),data)}
-  else{state.bills.push({id:uid(),paid:false,...data})}
-  markDirty();closeModal();renderAll();toast('Bill saved');
+function renderPinDots() {
+  document.querySelectorAll('#pinDots span').forEach((s, i) => s.classList.toggle('filled', i < pinBuf.length));
 }
-
-function openIncomeModal(id){
-  const i=id?state.incomes.find(x=>x.id===id):null;
-  openModal(`
-    <h3>${i?'Edit income':'Add income'}</h3>
-    <div class="field"><label>Source</label><input id="f_src" value="${i?esc(i.source):''}"></div>
-    <div class="field"><label>Person</label><select id="f_iperson">
-      <option ${i&&i.person==='Emily'?'selected':''}>Emily</option>
-      <option ${i&&i.person==='Hameed'?'selected':''}>Hameed</option></select></div>
-    <div class="field"><label>Amount per month ($)</label><input id="f_iamt" type="number" step="0.01" min="0" value="${i?i.amount:''}"></div>
-    <div class="field"><label>Personal holdback ($)</label><input id="f_ihold" type="number" step="0.01" min="0" value="${i?i.holdback:0}">
-      <div class="note">Everything above the holdback goes to household.</div></div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveIncome('${id||''}')">Save</button>
-    </div>`);
+function pinDigit(d) {
+  if (pinBuf.length >= 4) return;
+  pinBuf += d;
+  renderPinDots();
+  if (pinBuf.length === 4) checkPin();
 }
-async function saveIncome(id){
-  const source=$('f_src').value.trim();if(!source){toast('Name the income source');return}
-  const data={source,person:$('f_iperson').value,amount:+$('f_iamt').value||0,holdback:+$('f_ihold').value||0};
-  if(id){Object.assign(state.incomes.find(x=>x.id===id),data)}
-  else{state.incomes.push({id:uid(),...data})}
-  markDirty();closeModal();renderAll();toast('Income saved');
+function pinBack() {
+  pinBuf = pinBuf.slice(0, -1);
+  renderPinDots();
 }
-
-function openDebtModal(id){
-  const d=id?state.debts.find(x=>x.id===id):null;
-  openModal(`
-    <h3>${d?'Edit debt':'Add a debt'}</h3>
-    <div class="field"><label>Name</label><input id="f_dname" value="${d?esc(d.name):''}"></div>
-    <div class="field"><label>Type</label><input id="f_dtype" value="${d?esc(d.type||''):''}" placeholder="Loan, Card, Mortgage..."></div>
-    <div class="field"><label>Current balance ($)</label><input id="f_dbal" type="number" step="0.01" min="0" value="${d?d.balance:''}"></div>
-    <div class="field"><label>APR (%)</label><input id="f_dapr" type="number" step="0.01" min="0" value="${d?d.apr:0}"><div class="note">Interest accrues monthly at APR / 12 while the debt is Active.</div></div>
-    <div class="field"><label>Monthly payment ($)</label><input id="f_dmin" type="number" step="0.01" min="0" value="${d?d.minPayment:''}"></div>
-    <div class="field"><label>Due day of month</label><input id="f_ddue" type="number" min="1" max="31" value="${d&&d.due?d.due:''}"></div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveDebt('${id||''}')">Save</button>
-    </div>`);
+async function checkPin() {
+  let h;
+  try { h = await sha256Hex(pinBuf + PIN_SALT); }
+  catch (e) { alert('This page needs to run over https for the code screen to work.'); return; }
+  if (h === PIN_HASH) {
+    try { sessionStorage.setItem('eh_key', h); } catch (e) {}
+    unlockApp(h);
+  } else {
+    const dots = document.getElementById('pinDots');
+    dots.classList.add('shake');
+    setTimeout(() => { dots.classList.remove('shake'); pinBuf = ''; renderPinDots(); }, 380);
+  }
 }
-async function saveDebt(id){
-  const name=$('f_dname').value.trim();if(!name){toast('Name the debt');return}
-  const bal=+$('f_dbal').value||0;
-  const data={name,type:$('f_dtype').value.trim(),balance:bal,apr:+$('f_dapr').value||0,
-    minPayment:+$('f_dmin').value||0,due:+$('f_ddue').value||null};
-  if(id){Object.assign(state.debts.find(x=>x.id===id),data)}
-  else{state.debts.push({id:uid(),status:'Active',totalPaid:0,startBalance:bal,...data})}
-  markDirty();closeModal();renderAll();toast('Debt saved');
-}
-
-function openPaymentModal(id){
-  const d=state.debts.find(x=>x.id===id);
-  if(!d){toast('Debt not found');return}
-  const r=d.apr/100/12,interest=d.balance*r,nextInterest=Math.max(0,(d.balance-(+d.minPayment||0))*r);
-  openModal(`
-    <h3>Log a payment - ${esc(d.name)}</h3>
-    <div class="field"><label>Payment amount ($)</label><input id="f_pamt" type="number" step="0.01" min="0" value="${d.minPayment||''}"></div>
-    ${d.apr?`<div class="note">Current monthly interest estimate is ${fmt(interest)}. If you pay the default amount, the next estimate drops to about ${fmt(nextInterest)}.</div>`:''}
-    <div class="note">Current balance: <b>${fmt(d.balance)}</b></div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="logPayment('${id}')">Log payment</button>
-    </div>`);
-}
-async function logPayment(id){
-  const amt=+$('f_pamt').value||0;if(amt<=0){toast('Enter an amount');return}
-  const d=state.debts.find(x=>x.id===id);
-  if(!d){toast('Debt not found');return}
-  d.balance=Math.max(0,+(d.balance-amt).toFixed(2));
-  d.totalPaid=+(d.totalPaid+amt).toFixed(2);
-  recordDebtEvent(d.id,'Manual payment',amt,d.balance,'Logged from debt tab');
-  markDirty();closeModal();renderAll();
-  toast(fmt(amt)+' logged - '+d.name+' now at '+fmt(d.balance)+(d.balance===0?' !':''));
-}
-
-function openGoalModal(id){
-  const g=id?state.goals.find(x=>x.id===id):null;
-  openModal(`
-    <h3>${g?'Edit goal':'Add a goal'}</h3>
-    <div class="field"><label>What are you saving for?</label><input id="f_gname" value="${g?esc(g.name):''}" placeholder="Emergency fund, trip, new couch..."></div>
-    <div class="field"><label>Target ($)</label><input id="f_gtarget" type="number" step="0.01" min="0" value="${g?g.target:''}"></div>
-    <div class="field"><label>Saved so far ($)</label><input id="f_gsaved" type="number" step="0.01" min="0" value="${g?g.saved:0}"></div>
-    <div class="field"><label>Target date (optional)</label><input id="f_gdead" value="${g&&g.deadline?esc(g.deadline):''}" placeholder="e.g. Dec 2026"></div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveGoal('${id||''}')">Save</button>
-    </div>`);
-}
-async function saveGoal(id){
-  const name=$('f_gname').value.trim();if(!name){toast('Name the goal');return}
-  const data={name,target:+$('f_gtarget').value||0,saved:+$('f_gsaved').value||0,deadline:$('f_gdead').value.trim()};
-  if(id){Object.assign(state.goals.find(x=>x.id===id),data)}
-  else{state.goals.push({id:uid(),...data})}
-  markDirty();closeModal();renderAll();toast('Goal saved');
-}
-function openContribModal(id){
-  const g=state.goals.find(x=>x.id===id);
-  openModal(`
-    <h3>Add money - ${esc(g.name)}</h3>
-    <div class="field"><label>Amount ($)</label><input id="f_camt" type="number" step="0.01" min="0"></div>
-    <div class="note">${fmt(g.saved)} saved of ${fmt(g.target)} so far.</div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="addContribution('${id}')">Add</button>
-    </div>`);
-}
-async function addContribution(id){
-  const amt=+$('f_camt').value||0;if(amt<=0){toast('Enter an amount');return}
-  const g=state.goals.find(x=>x.id===id);
-  g.saved=+(g.saved+amt).toFixed(2);
-  markDirty();closeModal();renderAll();
-  toast(fmt(amt)+' added to '+g.name+(g.saved>=g.target?' - goal reached! !':''));
-}
-
-/* ================= NAV + INIT ================= */
-function showView(name){
-  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===name));
-  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id==='view-'+name));
-}
-document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
-
-const dz=$('dropzone');
-dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag')});
-dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
-dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');handleFiles(e.dataTransfer.files)});
-$('fileInput').addEventListener('change',e=>{handleFiles(e.target.files);e.target.value=''});
-
-function renderAll(){
-  $('hdMonth').textContent=keyLabel(state.currentMonth);
-  renderDashboard();renderBills();renderDebt();renderGoals();renderReceipts();renderArchive();
-  updateSaveUI();
-}
-
-let state=null;
-(async function init(){
-  state=ensureStateShape(await loadState());
-  if(!state){state=ensureStateShape(seedState())}
-  const rolled=rollover();
-  if(rolled){markDirty();toast('New month started - bills reset and last month archived.')}
+function unlockApp(hash) {
+  HOUSEHOLD_ID = HID_BASE + '-' + hash.slice(0, 16);
+  document.getElementById('lockScreen').classList.add('hidden');
   renderAll();
-  initFirebaseSync();
+  initFirebase();
+}
+// Keyboard support for the code screen
+document.addEventListener('keydown', e => {
+  if (document.getElementById('lockScreen').classList.contains('hidden')) return;
+  if (e.key >= '0' && e.key <= '9') pinDigit(e.key);
+  else if (e.key === 'Backspace') pinBack();
+});
+// Already unlocked this session? Skip the code screen.
+(function () {
+  let saved = null;
+  try { saved = sessionStorage.getItem('eh_key'); } catch (e) {}
+  if (saved === PIN_HASH) unlockApp(saved);
 })();
+
 </script>
 </body>
 </html>
-
-
