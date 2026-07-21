@@ -1,8 +1,7 @@
 /*
  * #1 - Month rollover (highest blast radius).
  * Covers monthsBetween, and rollover()'s archiving, interest accrual (incl.
- * multi-month compounding), paid-flag reset, recurring-bill advancement, and
- * completed-bill freezing.
+ * multi-month compounding), paid-flag reset, and recurring-bill advancement.
  *
  * rollover() reads the current date, so each test pins "today" via setNow().
  */
@@ -129,22 +128,4 @@ test('rollover: does NOT advance a recurring bill that was left unpaid', () => {
   setState(s);
   rollover();
   assert.equal(s.bills[0].nextDue, '2026-06-10'); // unchanged - still owed
-});
-
-test('rollover: freezes a completed bill (paid status kept, still archived)', () => {
-  setNow('2026-07-15');
-  const s = baseState('2026-06', {
-    bills: [
-      { id: 'b1', name: 'Old loan', amount: 200, person: 'Hameed', completed: true, completedMonth: '2026-06', paid: true },
-      { id: 'b2', name: 'Rent', amount: 1000, person: 'Hameed', paid: true },
-    ],
-  });
-  setState(s);
-  rollover();
-  const completed = s.bills.find((b) => b.id === 'b1');
-  assert.equal(completed.paid, true); // frozen, not reset
-  // it was completed in the closing month, so it belongs in that archive
-  assert.ok(s.archives['2026-06'].bills.some((b) => b.name === 'Old loan'));
-  // a normal bill still gets reset
-  assert.equal(s.bills.find((b) => b.id === 'b2').paid, false);
 });

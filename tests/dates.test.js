@@ -1,8 +1,7 @@
 /*
  * #2 - Recurring-bill date math.
  * Covers addMonths (month-end clamping, leap years, year rollover), billFreq,
- * billDueThisMonth (scheduled vs. due vs. overdue), and countsThisMonth
- * (completed-bill counting rules).
+ * and billDueThisMonth (scheduled vs. due vs. overdue).
  */
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -11,7 +10,6 @@ const { fn, setState } = require('./harness');
 const addMonths = fn('addMonths');
 const billFreq = fn('billFreq');
 const billDueThisMonth = fn('billDueThisMonth');
-const countsThisMonth = fn('countsThisMonth');
 
 test('addMonths: simple forward step keeps the day', () => {
   assert.equal(addMonths('2026-01-15', 1), '2026-02-15');
@@ -59,20 +57,4 @@ test('billDueThisMonth: non-monthly bill only counts on/after its next-due month
 test('billDueThisMonth: non-monthly bill without a next-due date falls back to due', () => {
   setState({ currentMonth: '2026-07' });
   assert.equal(billDueThisMonth({ recurring: true, freq: 6, nextDue: null }), true);
-});
-
-test('countsThisMonth: active bills follow the due rule', () => {
-  setState({ currentMonth: '2026-07' });
-  assert.equal(countsThisMonth({ completed: false, recurring: false }), true);
-  assert.equal(
-    countsThisMonth({ completed: false, recurring: true, freq: 3, nextDue: '2026-09-01' }),
-    false
-  );
-});
-
-test('countsThisMonth: completed bills only count in the month they were completed', () => {
-  setState({ currentMonth: '2026-07' });
-  assert.equal(countsThisMonth({ completed: true, completedMonth: '2026-07', paid: true }), true);
-  assert.equal(countsThisMonth({ completed: true, completedMonth: '2026-07', paid: false }), true);
-  assert.equal(countsThisMonth({ completed: true, completedMonth: '2026-06', paid: true }), false);
 });

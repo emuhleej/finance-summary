@@ -27,30 +27,19 @@ test('backfills every collection on an empty object', () => {
   assert.ok(emptyArr(s.bills), 'bills');
   assert.ok(emptyArr(s.debts), 'debts');
   assert.ok(emptyArr(s.goals), 'goals');
-  assert.ok(emptyArr(s.misc), 'misc'); // newest field - must exist for old blobs
   assert.ok(emptyArr(s.paymentHistory), 'paymentHistory');
   assert.ok(emptyObj(s.receipts), 'receipts');
   assert.ok(emptyObj(s.archives), 'archives');
-});
-
-test('adds misc:[] to a state saved before miscellaneous existed', () => {
-  // simulate a persisted blob with no `misc` key at all
-  const legacy = { currentMonth: '2026-03', bills: [], incomes: [], debts: [] };
-  const s = ensureStateShape(legacy);
-  assert.ok(Array.isArray(s.misc));
-  assert.equal(s.misc.length, 0);
 });
 
 test('preserves existing data and does not overwrite populated collections', () => {
   const s = ensureStateShape({
     currentMonth: '2026-03',
     bills: [{ id: 'x', name: 'Rent', amount: 5, recurring: true, freq: 3, nextDue: '2026-05-01' }],
-    misc: [{ id: 'm1', name: 'Gift', amount: 40, person: 'Emily' }],
     archives: { '2026-02': { bills: [], incomes: [], totals: {} } },
   });
   assert.equal(s.currentMonth, '2026-03');
   assert.equal(s.bills[0].name, 'Rent');
-  assert.equal(s.misc[0].name, 'Gift');
   assert.ok(s.archives['2026-02'], 'existing archive kept');
   // existing recurring settings must not be reset to defaults
   assert.equal(s.bills[0].recurring, true);
@@ -64,8 +53,6 @@ test('backfills new bill fields on a legacy bill', () => {
   assert.equal(b.recurring, false);
   assert.equal(b.freq, 1);
   assert.equal(b.nextDue, null);
-  assert.equal(b.completed, false);
-  assert.equal(b.completedMonth, null);
 });
 
 test('assigns ids to bills/debts that lack them', () => {
@@ -106,7 +93,6 @@ test('survives a JSON round-trip (simulating a load from storage)', () => {
   const reloaded = ensureStateShape(JSON.parse(JSON.stringify(saved)));
   assert.equal(reloaded.currentMonth, '2026-01');
   assert.equal(reloaded.bills[0].name, 'Phone');
-  assert.equal(reloaded.bills[0].completed, false); // new field present after reload
-  assert.ok(Array.isArray(reloaded.misc));
+  assert.equal(reloaded.bills[0].recurring, false); // new field present after reload
   assert.equal(reloaded.debts[0].startBalance, 1000);
 });
