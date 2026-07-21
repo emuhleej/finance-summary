@@ -1242,6 +1242,174 @@ document.addEventListener('keydown',e=>{
 </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Bill - Recurring Logic</title>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; background: #f4f4f9; padding: 20px; }
+    .card { background: white; max-width: 400px; padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px; }
+    input[type="text"], input[type="number"], input[type="date"], select {
+      width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px;
+    }
+    .checkbox-group { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; cursor: pointer; }
+    .checkbox-group input { width: auto; transform: scale(1.2); }
+    .hidden { display: none; }
+    .sub-panel { background: #f8fafc; border: 1px solid #e2e8f0; padding: 16px; border-radius: 8px; margin-top: 12px; }
+    button { background: #2563eb; color: white; border: none; padding: 12px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    button:hover { background: #1d4ed8; }
+    #previewOutput { background: #eef2ff; padding: 16px; border-radius: 8px; border: 1px solid #c7d2fe; font-size: 14px; }
+    ul { padding-left: 20px; margin: 8px 0 0 0; }
+  </style>
+</head>
+<body>
 
+  <div class="card">
+    <form id="addBillForm">
+      <div class="form-group">
+        <label>Bill Name</label>
+        <input type="text" id="billName" required placeholder="e.g., Car Insurance">
+      </div>
+      
+      <div class="form-group">
+        <label>Initial Due Date</label>
+        <input type="date" id="initialDate" required>
+      </div>
+
+      <!-- Recurring Checkbox -->
+      <div class="form-group">
+        <label class="checkbox-group">
+          <input type="checkbox" id="isRecurring">
+          This is a recurring bill
+        </label>
+      </div>
+
+      <!-- Conditional Recurring Options -->
+      <div id="recurringOptions" class="sub-panel hidden">
+        <div class="form-group">
+          <label>Frequency</label>
+          <select id="frequency">
+            <option value="1">Monthly</option>
+            <option value="3">Every 3 Months</option>
+            <option value="6">Every 6 Months</option>
+            <option value="12">Annually</option>
+          </select>
+        </div>
+
+        <!-- Conditional Next Date Picker -->
+        <div id="nextDateContainer" class="form-group hidden">
+          <label>Next Payment Due Date</label>
+          <input type="date" id="nextPaymentDate">
+          <small style="color: #64748b; font-size: 12px; font-weight: normal;">Overrides the default calculated date</small>
+        </div>
+      </div>
+
+      <button type="submit">Preview Schedule</button>
+    </form>
+  </div>
+
+  <div id="outputCard" class="card hidden">
+    <h3>Generated Schedule</h3>
+    <div id="previewOutput"></div>
+  </div>
+
+  <script>
+    // Elements
+    const isRecurringCheckbox = document.getElementById('isRecurring');
+    const recurringOptionsPanel = document.getElementById('recurringOptions');
+    const frequencySelect = document.getElementById('frequency');
+    const nextDateContainer = document.getElementById('nextDateContainer');
+    const nextPaymentDateInput = document.getElementById('nextPaymentDate');
+    const form = document.getElementById('addBillForm');
+
+    // 1. Toggle recurring panel based on checkbox
+    isRecurringCheckbox.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        recurringOptionsPanel.classList.remove('hidden');
+        checkFrequencyLogic();
+      } else {
+        recurringOptionsPanel.classList.add('hidden');
+      }
+    });
+
+    // 2. Toggle specific Next Date picker based on 3, 6, 12 month selections
+    function checkFrequencyLogic() {
+      const val = frequencySelect.value;
+      if (val === '3' || val === '6' || val === '12') {
+        nextDateContainer.classList.remove('hidden');
+      } else {
+        nextDateContainer.classList.add('hidden');
+        nextPaymentDateInput.value = ''; // clear out the value if hidden
+      }
+    }
+    frequencySelect.addEventListener('change', checkFrequencyLogic);
+
+    // Helper: Safely add months without date overflow (e.g. Jan 31 + 1 month = Feb 28, not Mar 3)
+    function addMonthsSafely(dateStr, monthsToAdd) {
+      const d = new Date(dateStr + 'T00:00:00'); // Prevent timezone shift
+      const targetMonth = d.getMonth() + monthsToAdd;
+      d.setMonth(targetMonth);
+      
+      // If the day overflowed to the next month, clamp it back to the last day of the correct month
+      if (d.getMonth() !== targetMonth % 12 && targetMonth % 12 !== -0) {
+        d.setDate(0); 
+      }
+      return d;
+    }
+
+    function formatDate(dateObj) {
+      return dateObj.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+    }
+
+    // 3. Handle Form Submission & Calculate Dates
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const billName = document.getElementById('billName').value;
+      const initialDate = document.getElementById('initialDate').value;
+      const isRecurring = isRecurringCheckbox.checked;
+      const frequency = parseInt(frequencySelect.value);
+      
+      let schedule = [];
+      
+      // First payment is always the initial date
+      const firstPayment = new Date(initialDate + 'T00:00:00');
+      schedule.push(`<strong>Initial:</strong> ${formatDate(firstPayment)}`);
+
+      if (isRecurring) {
+        let currentNextDate;
+        
+        // If 3, 6, or 12 months AND they picked a custom next date, use it
+        if ((frequency === 3 || frequency === 6 || frequency === 12) && nextPaymentDateInput.value) {
+          currentNextDate = nextPaymentDateInput.value;
+        } else {
+          // Otherwise, calculate the natural next date
+          currentNextDate = addMonthsSafely(initialDate, frequency).toISOString().split('T')[0];
+        }
+
+        // Generate the next 4 occurrences for preview
+        for (let i = 1; i <= 4; i++) {
+          const dateObj = new Date(currentNextDate + 'T00:00:00');
+          schedule.push(`<strong>Occurrence ${i}:</strong> ${formatDate(dateObj)}`);
+          
+          // Calculate the step for the loop
+          currentNextDate = addMonthsSafely(currentNextDate, frequency).toISOString().split('T')[0];
+        }
+      }
+
+      // Display logic
+      document.getElementById('outputCard').classList.remove('hidden');
+      document.getElementById('previewOutput').innerHTML = 
+        `<strong>${billName} Schedule:</strong><br><ul>` + 
+        schedule.map(item => `<li>${item}</li>`).join('') + 
+        `</ul>`;
+    });
+  </script>
+</body>
+</html>
 
 
